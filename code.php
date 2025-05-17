@@ -60,8 +60,19 @@ if(isset($_POST['sendRegisterForm']))
 if(isset($_POST['sendLoginForm']))
 {
     $loginEmail = mysqli_real_escape_string($con, $_POST['loginEmail']);
+    $password = mysqli_real_escape_string($con, $_POST['password']);
 
-    $query = "SELECT * FROM users WHERE loginEmail='$loginEmail'";
+    if($loginEmail == NULL || $password == NULL)
+    {
+        $res = [
+            'status' => 422,
+            'message' => 'Все поля обязательны для заполнения'
+        ];
+        echo json_encode($res);
+        return;
+    }
+
+    $query = "SELECT * FROM users WHERE loginEmail='$loginEmail' AND password='$password'";
     $query_run = mysqli_query($con, $query);
 
     if(mysqli_num_rows($query_run) == 1)
@@ -71,14 +82,14 @@ if(isset($_POST['sendLoginForm']))
         session_start();
         $_SESSION['id'] = $info['id'];
         $_SESSION['loginemail'] = $info['loginEmail'];
-        $_SESSION['surname'] = $info['surName'];
-        $_SESSION['firstname'] = $info['firstName'];
-        $_SESSION['secondname'] = $info['secondName'];
-        $_SESSION['jobtitle'] = $info['jobTitle'];
+        $_SESSION['surname'] = $info['surname'];
+        $_SESSION['firstname'] = $info['firstname'];
+        $_SESSION['secondname'] = $info['secondname'];
+        $_SESSION['jobtitle'] = $info['jobtitle'];
         
         $res = [
             'status' => 200,
-            'message' => 'Успешеая авторизация. Данные успешно найдены.',
+            'message' => 'Успешная авторизация',
             'data' => $info
         ];
         echo json_encode($res);
@@ -88,7 +99,7 @@ if(isset($_POST['sendLoginForm']))
     {
         $res = [
             'status' => 404,
-            'message' => 'Ошибка! Данные не найдены!'
+            'message' => 'Неверный логин или пароль'
         ];
         echo json_encode($res);
         return;

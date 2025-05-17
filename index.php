@@ -8,14 +8,10 @@ session_start();
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 
-// Check if the user is not logged in, then redirect the user to login page
-if ( isset($_SESSION["id"]) && $_SESSION["id"] > 0) {
-    
-    if($_SESSION['id'] > 0){
-        header("location: /maslosklad/");
-        exit;  
-    }
-    
+// Если пользователь авторизован, перенаправляем на /maslosklad/
+if (isset($_SESSION["id"]) && $_SESSION["id"] > 0) {
+    header("location: /maslosklad/");
+    exit;
 }
 
 ?>
@@ -177,7 +173,7 @@ if ( isset($_SESSION["id"]) && $_SESSION["id"] > 0) {
 
             $.ajax({
                 type: "POST",
-                url: "code.php",
+                url: getCodePath(),
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -218,7 +214,7 @@ if ( isset($_SESSION["id"]) && $_SESSION["id"] > 0) {
 
             $.ajax({
                 type: "POST",
-                url: "code.php",
+                url: getCodePath(),
                 data: formData,
                 processData: false,
                 contentType: false,
