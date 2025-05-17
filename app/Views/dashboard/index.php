@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <h1>Панель управления</h1>
             <p class="lead">
-                Добро пожаловать, <?= !empty($_SESSION['surname']) ? htmlspecialchars($_SESSION['surname']) : htmlspecialchars($_SESSION['loginemail']) ?>!
+                Добро пожаловать, <?= isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Пользователь' ?>!
                 Выберите нужный раздел для работы.
             </p>
         </div>
@@ -42,5 +42,18 @@
                 </div>
             </div>
         </div>
+        
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-1 mb-3 text-danger"></i>
+                    <h5 class="card-title">Пользователи</h5>
+                    <p class="card-text">Управление учетными записями пользователей</p>
+                    <a href="/users" class="btn btn-danger">Перейти</a>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </div> 

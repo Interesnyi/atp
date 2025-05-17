@@ -25,6 +25,15 @@ $router->get('dashboard', 'DashboardController', 'index');
 $router->get('balance', 'BalanceController', 'index');
 $router->get('maslosklad', 'MasloskladController', 'index');
 
+// Маршруты для управления пользователями
+$router->get('users', 'UsersController', 'index');
+$router->get('users/create', 'UsersController', 'create');
+$router->post('users/store', 'UsersController', 'store');
+$router->get('users/show/{id}', 'UsersController', 'show');
+$router->get('users/edit/{id}', 'UsersController', 'edit');
+$router->post('users/update/{id}', 'UsersController', 'update');
+$router->get('users/delete/{id}', 'UsersController', 'delete');
+
 // Маршруты для профиля пользователя
 $router->get('profile', 'ProfileController', 'index');
 $router->post('profile/update', 'ProfileController', 'update');
