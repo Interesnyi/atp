@@ -6,10 +6,52 @@ abstract class Controller {
     protected $view;
     protected $model;
     protected $config;
+    protected $middlewares = [];
 
     public function __construct() {
         $this->config = require __DIR__ . '/../Config/config.php';
         $this->view = new View();
+    }
+
+    /**
+     * Добавляет middleware для контроллера или конкретного метода
+     * @param string $middleware Тип middleware (auth, permission)
+     * @param mixed $options Дополнительные параметры
+     */
+    protected function middleware($middleware, $options = null) {
+        $this->middlewares[] = [
+            'type' => $middleware,
+            'options' => $options
+        ];
+        
+        // Применяем middleware
+        $this->applyMiddleware($middleware, $options);
+    }
+    
+    /**
+     * Применяет middleware к текущему запросу
+     * @param string $middleware Тип middleware
+     * @param mixed $options Дополнительные параметры
+     */
+    protected function applyMiddleware($middleware, $options = null) {
+        switch ($middleware) {
+            case 'auth':
+                $this->authMiddleware();
+                break;
+        }
+    }
+    
+    /**
+     * Middleware для проверки авторизации
+     */
+    protected function authMiddleware() {
+        if (!isset($_SESSION['user_id']) && !isset($_SESSION['id'])) {
+            // Сохраняем URL для редиректа после авторизации
+            $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+            
+            // Перенаправляем на страницу входа
+            $this->redirect('/login');
+        }
     }
 
     protected function loadModel($model) {
@@ -21,7 +63,9 @@ abstract class Controller {
     }
 
     protected function view($name, $data = []) {
-        return $this->view->render($name, $data);
+        // Получаем результат рендеринга и выводим его
+        echo $this->view->render($name, $data);
+        return true;
     }
 
     protected function json($data, $statusCode = 200) {
@@ -88,5 +132,18 @@ abstract class Controller {
 
     protected function validateCsrf($token) {
         return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    }
+
+    /**
+     * Отображение страницы 404 с сообщением
+     * @param string $message Сообщение для отображения
+     */
+    protected function renderNotFound($message = 'Страница не найдена') {
+        header("HTTP/1.0 404 Not Found");
+        $this->view('error/404', [
+            'title' => '404 - Страница не найдена',
+            'message' => $message
+        ]);
+        exit;
     }
 } 

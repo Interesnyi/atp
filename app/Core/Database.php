@@ -76,7 +76,19 @@ class Database {
     }
 
     public function fetch($sql, $params = []) {
-        return $this->query($sql, $params)->fetch();
+        try {
+            error_log("DEBUG Database::fetch - SQL: {$sql}");
+            error_log("DEBUG Database::fetch - Params: " . json_encode($params));
+            
+            $stmt = $this->query($sql, $params);
+            $result = $stmt->fetch();
+            
+            error_log("DEBUG Database::fetch - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("ОШИБКА Database::fetch - " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function fetchAll($sql, $params = []) {
@@ -85,5 +97,24 @@ class Database {
 
     public function lastInsertId() {
         return $this->connection->lastInsertId();
+    }
+
+    /**
+     * Возвращает первую строку результата запроса
+     */
+    public function fetchOne($sql, $params = []) {
+        try {
+            error_log("DEBUG Database::fetchOne - SQL: {$sql}");
+            error_log("DEBUG Database::fetchOne - Params: " . json_encode($params));
+            
+            $stmt = $this->query($sql, $params);
+            $result = $stmt->fetch();
+            
+            error_log("DEBUG Database::fetchOne - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("ОШИБКА Database::fetchOne - " . $e->getMessage());
+            throw $e;
+        }
     }
 } 

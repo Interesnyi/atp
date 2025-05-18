@@ -70,7 +70,10 @@
                     </div>
                 </div>
                 
-                <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                <?php 
+                $currentUserId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : (isset($_SESSION['id']) ? $_SESSION['id'] : 0);
+                if ($user['id'] != $currentUserId): 
+                ?>
                 <div class="card-footer">
                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
                         <i class="bi bi-trash"></i> Удалить пользователя
@@ -83,7 +86,10 @@
 </div>
 
 <!-- Модальное окно подтверждения удаления -->
-<?php if ($user['id'] != $_SESSION['user_id']): ?>
+<?php 
+$currentUserId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : (isset($_SESSION['id']) ? $_SESSION['id'] : 0);
+if ($user['id'] != $currentUserId): 
+?>
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

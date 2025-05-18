@@ -11,7 +11,9 @@ class User extends Model {
      * Поиск пользователя по email
      */
     public function findByEmail($email) {
-        return $this->findOne('email = ?', [$email]);
+        // Проверяем как по новому полю email, так и по старому loginEmail
+        $user = $this->findOne('email = ? OR loginEmail = ?', [$email, $email]);
+        return $user;
     }
 
     /**
@@ -25,6 +27,15 @@ class User extends Model {
         
         // Используем безопасное сравнение паролей с учетом хеширования
         if (password_verify($password, $user['password'])) {
+            // Проверяем и заполняем поля для совместимости
+            if (empty($user['email']) && !empty($user['loginEmail'])) {
+                $user['email'] = $user['loginEmail'];
+            }
+            
+            if (empty($user['username']) && !empty($user['surName'])) {
+                $user['username'] = $user['surName'] . ' ' . $user['firstName'];
+            }
+            
             return $user;
         }
         
@@ -43,15 +54,36 @@ class User extends Model {
      * Получение списка всех пользователей
      */
     public function getAllUsers($limit = 100, $offset = 0) {
-        $sql = "SELECT * FROM {$this->table} ORDER BY id DESC LIMIT ? OFFSET ?";
-        return $this->db->fetchAll($sql, [$limit, $offset]);
+        try {
+            // Отладочная информация
+            error_log("DEBUG: User->getAllUsers вызван с параметрами limit=$limit, offset=$offset");
+            
+            $sql = "SELECT * FROM {$this->table} ORDER BY id DESC LIMIT ? OFFSET ?";
+            
+            error_log("DEBUG: SQL запрос: $sql");
+            
+            $result = $this->db->fetchAll($sql, [$limit, $offset]);
+            
+            error_log("DEBUG: Количество полученных пользователей: " . count($result));
+            
+            // Выводим первую запись для проверки структуры
+            if (count($result) > 0) {
+                error_log("DEBUG: Первая запись: " . print_r($result[0], true));
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            error_log("ОШИБКА в User->getAllUsers: " . $e->getMessage());
+            error_log("Трассировка: " . $e->getTraceAsString());
+            throw $e; // Пробрасываем исключение дальше для обработки в контроллере
+        }
     }
     
     /**
      * Получение пользователя по ID
      */
     public function getUserById($id) {
-        return $this->findById($id);
+        return $this->find($id);
     }
     
     /**
@@ -61,6 +93,10 @@ class User extends Model {
         return $this->create([
             'username' => $data['username'],
             'email' => $data['email'],
+            'loginEmail' => $data['email'], // Для совместимости
+            'firstName' => $data['username'], // Для совместимости
+            'surName' => '', // Для совместимости
+            'secondName' => '', // Для совместимости
             'password' => $data['password'],
             'role' => $data['role'] ?? 'user',
             'created_at' => date('Y-m-d H:i:s')
@@ -74,13 +110,16 @@ class User extends Model {
         $updateData = [
             'username' => $data['username'],
             'email' => $data['email'],
-            'role' => $data['role'] ?? 'user',
             'updated_at' => date('Y-m-d H:i:s')
         ];
         
         // Если указан пароль, обновляем его
         if (isset($data['password'])) {
             $updateData['password'] = $data['password'];
+        }
+        
+        if (isset($data['role'])) {
+            $updateData['role'] = $data['role'];
         }
         
         return $this->update($id, $updateData);
@@ -99,10 +138,10 @@ class User extends Model {
     public function searchUsers($query, $limit = 100, $offset = 0) {
         $query = "%{$query}%";
         $sql = "SELECT * FROM {$this->table} 
-                WHERE username LIKE ? OR email LIKE ? 
+                WHERE username LIKE ? OR email LIKE ? OR loginEmail LIKE ?
                 ORDER BY id DESC LIMIT ? OFFSET ?";
                 
-        return $this->db->fetchAll($sql, [$query, $query, $limit, $offset]);
+        return $this->db->fetchAll($sql, [$query, $query, $query, $limit, $offset]);
     }
     
     /**

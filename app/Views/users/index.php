@@ -25,20 +25,6 @@
                         <?php unset($_SESSION['error']); ?>
                     <?php endif; ?>
                     
-                    <div class="mb-3">
-                        <form action="/users" method="GET" class="row g-3">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Поиск пользователей..." 
-                                        name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
@@ -62,9 +48,9 @@
                                                 <?php if ($user['role'] === 'admin'): ?>
                                                     <span class="badge bg-danger">Администратор</span>
                                                 <?php elseif ($user['role'] === 'manager'): ?>
-                                                    <span class="badge bg-warning">Менеджер</span>
+                                                    <span class="badge bg-primary">Менеджер</span>
                                                 <?php else: ?>
-                                                    <span class="badge bg-info">Пользователь</span>
+                                                    <span class="badge bg-secondary">Пользователь</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td><?= date('d.m.Y H:i', strtotime($user['created_at'] ?? date('Y-m-d H:i:s'))) ?></td>
@@ -73,10 +59,13 @@
                                                     <a href="/users/show/<?= $user['id'] ?>" class="btn btn-outline-primary" title="Просмотр">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="/users/edit/<?= $user['id'] ?>" class="btn btn-outline-warning" title="Редактировать">
+                                                    <a href="/users/edit/<?= $user['id'] ?>" class="btn btn-outline-secondary" title="Редактировать">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                                                    <?php 
+                                                    $currentUserId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : (isset($_SESSION['id']) ? $_SESSION['id'] : 0); 
+                                                    if ($user['id'] != $currentUserId): 
+                                                    ?>
                                                         <button type="button" class="btn btn-outline-danger" title="Удалить" 
                                                             data-bs-toggle="modal" data-bs-target="#deleteUserModal<?= $user['id'] ?>">
                                                             <i class="bi bi-trash"></i>

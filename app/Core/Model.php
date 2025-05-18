@@ -16,8 +16,19 @@ abstract class Model {
     }
 
     public function find($id) {
-        $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        return $this->db->fetch($sql, [$id]);
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?";
+            error_log("DEBUG Model::find - SQL запрос: {$sql}, параметры: " . print_r([$id], true));
+            
+            $result = $this->db->fetch($sql, [$id]);
+            
+            error_log("DEBUG Model::find - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            return $result;
+        } catch (\Exception $e) {
+            error_log("ОШИБКА в Model::find - " . $e->getMessage());
+            error_log("Трассировка: " . $e->getTraceAsString());
+            throw $e;
+        }
     }
 
     public function all() {
