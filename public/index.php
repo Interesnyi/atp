@@ -28,6 +28,23 @@ $router->get('dashboard', 'DashboardController', 'index');
 // Маршруты для разделов системы
 $router->get('balance', 'BalanceController', 'index');
 $router->get('maslosklad', 'MasloskladController', 'index');
+$router->get('maslosklad/warehouses', 'MasloskladController', 'warehouses');
+
+// Маршруты для материального склада
+$router->get('maslosklad/material/{warehouseId}', 'MaterialWarehouseController', 'index');
+$router->get('maslosklad/material/{warehouseId}/item/{itemId}', 'MaterialWarehouseController', 'item');
+$router->get('maslosklad/material/{warehouseId}/reception', 'MaterialWarehouseController', 'reception');
+$router->post('maslosklad/material/{warehouseId}/process-reception', 'MaterialWarehouseController', 'processReception');
+$router->get('maslosklad/material/{warehouseId}/issue', 'MaterialWarehouseController', 'issue');
+$router->post('maslosklad/material/{warehouseId}/process-issue', 'MaterialWarehouseController', 'processIssue');
+$router->get('maslosklad/material/{warehouseId}/writeoff', 'MaterialWarehouseController', 'writeoff');
+$router->post('maslosklad/material/{warehouseId}/process-writeoff', 'MaterialWarehouseController', 'processWriteoff');
+$router->get('maslosklad/material/{warehouseId}/inventory', 'MaterialWarehouseController', 'inventory');
+$router->post('maslosklad/material/{warehouseId}/process-inventory', 'MaterialWarehouseController', 'processInventory');
+
+// API маршруты
+$router->get('api/items/by-category/{categoryId}', 'ApiController', 'itemsByCategory');
+$router->get('api/items/{itemId}/inventory', 'ApiController', 'itemInventory');
 
 // Маршруты для управления пользователями
 $router->get('users', 'UsersController', 'index');
