@@ -67,7 +67,8 @@ class Router {
                 
                 if (method_exists($controllerObject, $action)) {
                     unset($this->params['controller'], $this->params['action']);
-                    return call_user_func_array([$controllerObject, $action], [$this->params]);
+                    call_user_func_array([$controllerObject, $action], [$this->params]);
+                    return;
                 }
             }
         }
@@ -76,10 +77,11 @@ class Router {
             $controller = "\\App\\Controllers\\" . $this->notFoundCallback['controller'];
             $controllerObject = new $controller();
             $action = $this->notFoundCallback['action'];
-            return call_user_func([$controllerObject, $action]);
+            call_user_func([$controllerObject, $action]);
+            return;
         }
         
         header("HTTP/1.0 404 Not Found");
-        return '404 Not Found';
+        echo '404 Not Found';
     }
 } 

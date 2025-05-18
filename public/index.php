@@ -3,11 +3,15 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Router;
+use App\Helpers\EncodingHelper;
 
 // Настройка отображения ошибок - включаем для отладки
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Устанавливаем правильную кодировку UTF-8
+EncodingHelper::setUtf8Headers();
 
 // Инициализация сессии
 session_start();
@@ -34,6 +38,11 @@ $router->get('users/edit/{id}', 'UsersController', 'edit');
 $router->post('users/update/{id}', 'UsersController', 'update');
 $router->get('users/delete/{id}', 'UsersController', 'delete');
 
+// Маршруты для управления ролями
+$router->get('roles', 'RolesController', 'index');
+$router->get('roles/permissions/{role}', 'RolesController', 'permissions');
+$router->post('roles/permissions/{role}', 'RolesController', 'permissions');
+
 // Маршруты для профиля пользователя
 $router->get('profile', 'ProfileController', 'index');
 $router->post('profile/update', 'ProfileController', 'update');
@@ -49,4 +58,4 @@ $router->get('logout', 'AuthController', 'logout');
 $router->setNotFoundHandler('ErrorController', 'notFound');
 
 // Запускаем роутер
-echo $router->dispatch(); 
+$router->dispatch(); 

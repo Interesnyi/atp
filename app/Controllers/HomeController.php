@@ -11,7 +11,7 @@ class HomeController extends Controller {
             $this->redirect('/maslosklad');
         }
 
-        return $this->view->render('home/index', [
+        return $this->view('home/index', [
             'title' => 'ELDIR | Главная страница'
         ]);
     }

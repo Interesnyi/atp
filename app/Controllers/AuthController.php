@@ -62,21 +62,41 @@ class AuthController extends Controller {
         error_log("User found: " . ($user ? 'Yes' : 'No'));
         if ($user) {
             error_log("User data: " . json_encode($user));
-            error_log("Password comparison: Input = '{$password}', DB = '{$user['password']}', Match = " . 
-                      ($user['password'] === $password ? 'Yes' : 'No'));
         }
 
-        if (!$user || $user['password'] !== $password) {
+        // Используем метод validateCredentials для проверки учетных данных
+        $authenticatedUser = $this->user->validateCredentials($loginEmail, $password);
+        
+        if (!$authenticatedUser) {
             return $this->json([
                 'status' => 422,
                 'message' => 'Неверный логин или пароль'
             ]);
         }
+        
+        // Обновляем $user на authenticatedUser с проверенными данными
+        $user = $authenticatedUser;
 
         // Сохраняем данные в сессии, проверяя наличие ключей
         $_SESSION['id'] = $user['id'];
         $_SESSION['loginemail'] = $user['loginEmail'];
         $_SESSION['surname'] = isset($user['surName']) ? $user['surName'] : '';
+        
+        // Сохраняем роль пользователя
+        $_SESSION['role'] = isset($user['role']) ? $user['role'] : 'user';
+        
+        // Для совместимости добавим также user_id
+        $_SESSION['user_id'] = $user['id'];
+        
+        // Если доступно имя пользователя, сохраняем его
+        if (isset($user['username']) && !empty($user['username'])) {
+            $_SESSION['username'] = $user['username'];
+        }
+        
+        // Если доступен email, сохраняем его
+        if (isset($user['email']) && !empty($user['email'])) {
+            $_SESSION['email'] = $user['email'];
+        }
 
         return $this->json([
             'status' => 200,
@@ -127,13 +147,19 @@ class AuthController extends Controller {
             error_log("Error getting table structure: " . $e->getMessage());
         }
 
+        // Формируем имя пользователя из фамилии и имени
+        $username = $data['surName'] . ' ' . $data['firstName'];
+        
         $userData = [
             'surName' => $data['surName'],
             'firstName' => $data['firstName'],
             'secondName' => $data['secondName'],
             'jobTitle' => $data['jobTitle'],
             'loginEmail' => $data['loginEmail'],
-            'password' => $data['password']
+            'email' => $data['loginEmail'],  // Используем loginEmail как email
+            'username' => $username,  // Добавляем username
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),  // Хешируем пароль
+            'role' => 'user'  // Присваиваем роль по умолчанию
         ];
 
         // Дебаг: Вывод данных для создания пользователя
