@@ -31,10 +31,10 @@ class MaterialWarehouseController extends Controller {
         $this->customerModel = new Customer();
         
         // Добавляем middleware для проверки авторизации
-        $this->addMiddleware('auth');
+        $this->middleware('auth');
         
         // Добавляем middleware для проверки прав доступа к модулю материального склада
-        $this->addMiddleware('permission', ['maslosklad.view']);
+        $this->middleware('permission', ['maslosklad.view']);
     }
     
     /**
@@ -128,7 +128,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function reception($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         $warehouse = $this->warehouseModel->getWarehouseById($warehouseId);
         if (!$warehouse) {
@@ -158,7 +158,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function processReception($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         // Проверяем метод запроса
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -225,7 +225,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function issue($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         $warehouse = $this->warehouseModel->getWarehouseById($warehouseId);
         if (!$warehouse) {
@@ -255,7 +255,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function processIssue($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         // Проверяем метод запроса
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -326,7 +326,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function writeoff($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         $warehouse = $this->warehouseModel->getWarehouseById($warehouseId);
         if (!$warehouse) {
@@ -352,7 +352,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function processWriteoff($warehouseId) {
         // Проверяем наличие прав на создание операций
-        $this->addMiddleware('permission', ['maslosklad.create']);
+        $this->middleware('permission', ['maslosklad.create']);
         
         // Проверяем метод запроса
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -426,7 +426,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function inventory($warehouseId) {
         // Проверяем наличие прав на управление складом
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         $warehouse = $this->warehouseModel->getWarehouseById($warehouseId);
         if (!$warehouse) {
@@ -461,7 +461,7 @@ class MaterialWarehouseController extends Controller {
      */
     public function processInventory($warehouseId) {
         // Проверяем наличие прав на управление складом
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         // Проверяем метод запроса
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

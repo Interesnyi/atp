@@ -16,7 +16,7 @@ class ApiController extends Controller {
         $this->categoryModel = new Category();
         
         // Добавляем middleware для проверки авторизации
-        $this->addMiddleware('auth');
+        $this->middleware('auth');
     }
     
     /**

@@ -16,10 +16,10 @@ class MasloskladController extends Controller {
         $this->warehouseModel = new Warehouse();
         
         // Добавляем middleware для проверки авторизации
-        $this->addMiddleware('auth');
+        $this->middleware('auth');
         
         // Добавляем middleware для проверки прав доступа к модулю масло-склада
-        $this->addMiddleware('permission', ['maslosklad.view']);
+        $this->middleware('permission', ['maslosklad.view']);
     }
     
     /**
@@ -100,7 +100,7 @@ class MasloskladController extends Controller {
      */
     public function warehouses() {
         // Проверяем наличие прав на управление складами
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         // Получаем все типы складов
         $warehouseTypes = $this->warehouseTypeModel->getAllTypes();
@@ -121,7 +121,7 @@ class MasloskladController extends Controller {
      */
     public function createWarehouse() {
         // Проверяем наличие прав на управление складами
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         // Проверяем, что запрос отправлен методом POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -175,7 +175,7 @@ class MasloskladController extends Controller {
      */
     public function updateWarehouse($id) {
         // Проверяем наличие прав на управление складами
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         // Проверяем, что запрос отправлен методом POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -236,7 +236,7 @@ class MasloskladController extends Controller {
      */
     public function deleteWarehouse($id) {
         // Проверяем наличие прав на управление складами
-        $this->addMiddleware('permission', ['maslosklad.manage']);
+        $this->middleware('permission', ['maslosklad.manage']);
         
         // Проверяем, что запрос отправлен методом POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
