@@ -23,6 +23,8 @@ class Database {
                 error_log("Host: " . $this->config['db']['host']);
                 error_log("Database: " . $this->config['db']['database']);
                 error_log("User: " . $this->config['db']['user']);
+                error_log("Charset: " . $this->config['db']['charset']);
+                error_log("Collation: " . $this->config['db']['collation']);
             }
 
             $dsn = "mysql:host={$this->config['db']['host']};dbname={$this->config['db']['database']};charset={$this->config['db']['charset']}";
@@ -30,6 +32,7 @@ class Database {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$this->config['db']['charset']} COLLATE {$this->config['db']['collation']}"
             ];
 
             $this->connection = new PDO(
@@ -39,6 +42,10 @@ class Database {
                 $options
             );
 
+            // Убедимся что соединение использует utf8mb4
+            $this->connection->exec("SET CHARACTER SET {$this->config['db']['charset']}");
+            $this->connection->exec("SET NAMES {$this->config['db']['charset']} COLLATE {$this->config['db']['collation']}");
+            
             // Проверяем соединение
             $this->connection->query('SELECT 1');
             
@@ -77,13 +84,17 @@ class Database {
 
     public function fetch($sql, $params = []) {
         try {
-            error_log("DEBUG Database::fetch - SQL: {$sql}");
-            error_log("DEBUG Database::fetch - Params: " . json_encode($params));
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::fetch - SQL: {$sql}");
+                error_log("DEBUG Database::fetch - Params: " . json_encode($params));
+            }
             
             $stmt = $this->query($sql, $params);
             $result = $stmt->fetch();
             
-            error_log("DEBUG Database::fetch - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::fetch - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            }
             return $result;
         } catch (PDOException $e) {
             error_log("ОШИБКА Database::fetch - " . $e->getMessage());
@@ -104,13 +115,17 @@ class Database {
      */
     public function fetchOne($sql, $params = []) {
         try {
-            error_log("DEBUG Database::fetchOne - SQL: {$sql}");
-            error_log("DEBUG Database::fetchOne - Params: " . json_encode($params));
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::fetchOne - SQL: {$sql}");
+                error_log("DEBUG Database::fetchOne - Params: " . json_encode($params));
+            }
             
             $stmt = $this->query($sql, $params);
             $result = $stmt->fetch();
             
-            error_log("DEBUG Database::fetchOne - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::fetchOne - Результат: " . ($result ? json_encode($result) : 'NULL'));
+            }
             return $result;
         } catch (PDOException $e) {
             error_log("ОШИБКА Database::fetchOne - " . $e->getMessage());
@@ -123,13 +138,17 @@ class Database {
      */
     public function execute($sql, $params = []) {
         try {
-            error_log("DEBUG Database::execute - SQL: {$sql}");
-            error_log("DEBUG Database::execute - Params: " . json_encode($params));
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::execute - SQL: {$sql}");
+                error_log("DEBUG Database::execute - Params: " . json_encode($params));
+            }
             
             $stmt = $this->query($sql, $params);
             $rowCount = $stmt->rowCount();
             
-            error_log("DEBUG Database::execute - Affected rows: {$rowCount}");
+            if ($this->config['app']['debug']) {
+                error_log("DEBUG Database::execute - Affected rows: {$rowCount}");
+            }
             return $rowCount;
         } catch (PDOException $e) {
             error_log("ОШИБКА Database::execute - " . $e->getMessage());

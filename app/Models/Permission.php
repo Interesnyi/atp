@@ -8,6 +8,16 @@ class Permission extends Model {
     protected $table = 'permissions';
     
     /**
+     * Обработка текстовых полей из базы данных
+     * Метод больше не нужен, но оставлен для совместимости
+     */
+    private function processTextFields($data) {
+        // Просто возвращаем данные без конвертации,
+        // т.к. база данных уже настроена на правильную кодировку
+        return $data;
+    }
+    
+    /**
      * Получение всех прав доступа с группировкой
      */
     public function getAllPermissions() {
@@ -15,7 +25,8 @@ class Permission extends Model {
                 FROM {$this->table} p
                 JOIN permission_groups pg ON p.group_id = pg.id
                 ORDER BY pg.id, p.id";
-        return $this->db->fetchAll($sql);
+        $result = $this->db->fetchAll($sql);
+        return $this->processTextFields($result);
     }
     
     /**
@@ -27,7 +38,8 @@ class Permission extends Model {
                 JOIN role_permissions rp ON p.id = rp.permission_id
                 WHERE rp.role = ?
                 ORDER BY p.id";
-        return $this->db->fetchAll($sql, [$role]);
+        $result = $this->db->fetchAll($sql, [$role]);
+        return $this->processTextFields($result);
     }
     
     /**
@@ -47,14 +59,16 @@ class Permission extends Model {
      */
     public function getAllGroups() {
         $sql = "SELECT * FROM permission_groups ORDER BY id";
-        return $this->db->fetchAll($sql);
+        $result = $this->db->fetchAll($sql);
+        return $this->processTextFields($result);
     }
     
     /**
      * Получение прав для конкретной группы
      */
     public function getPermissionsByGroup($groupId) {
-        return $this->where('group_id = ?', [$groupId]);
+        $result = $this->where('group_id = ?', [$groupId]);
+        return $this->processTextFields($result);
     }
     
     /**
@@ -83,7 +97,8 @@ class Permission extends Model {
                 JOIN permission_groups pg ON p.group_id = pg.id
                 LEFT JOIN role_permissions rp ON p.id = rp.permission_id AND rp.role = ?
                 ORDER BY pg.id, p.id";
-        return $this->db->fetchAll($sql, [$role]);
+        $result = $this->db->fetchAll($sql, [$role]);
+        return $this->processTextFields($result);
     }
     
     /**

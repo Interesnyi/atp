@@ -101,7 +101,6 @@ abstract class Controller {
     protected function view($name, $data = []) {
         // Получаем результат рендеринга и выводим его
         echo $this->view->render($name, $data);
-        return true;
     }
 
     protected function json($data, $statusCode = 200) {
@@ -189,25 +188,41 @@ abstract class Controller {
     protected function loadUserPermissions() {
         if (isset($_SESSION['role'])) {
             $role = $_SESSION['role'];
-            
-            // Для админа не нужно загружать права, он имеет доступ ко всему
+
+            // Для админа мы можем установить особые права, не имеющие отношения к ролям
             if ($role === 'admin') {
                 return [];
             }
-            
-            // Загружаем права для текущей роли
-            $permissionModel = new \App\Models\Permission();
-            $permissions = $permissionModel->getPermissionsByRole($role);
-            
-            // Формируем ассоциативный массив для быстрой проверки
-            $userPermissions = [];
-            foreach ($permissions as $permission) {
-                $userPermissions[$permission['slug']] = true;
+
+            try {
+                // Проверяем наличие таблиц
+                $db = Database::getInstance();
+                $tablesExist = $db->fetch("SELECT COUNT(*) as count FROM information_schema.tables 
+                                          WHERE table_schema = DATABASE() 
+                                          AND table_name IN ('permissions', 'role_permissions')");
+                
+                if ($tablesExist && $tablesExist['count'] == 2) {
+                    // Загружаем права для текущей роли
+                    $permissionModel = new \App\Models\Permission();
+                    $permissions = $permissionModel->getPermissionsByRole($role);
+    
+                    // Формируем ассоциативный массив для удобного использования
+                    $userPermissions = [];
+                    foreach ($permissions as $permission) {
+                        $userPermissions[$permission['slug']] = true;
+                    }
+    
+                    return $userPermissions;
+                } else {
+                    error_log("Tables permissions or role_permissions do not exist");
+                    return [];
+                }
+            } catch (\Exception $e) {
+                error_log("Error loading permissions: " . $e->getMessage());
+                return [];
             }
-            
-            return $userPermissions;
         }
-        
+
         return [];
     }
 
