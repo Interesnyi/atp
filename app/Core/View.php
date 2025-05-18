@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Helpers\EncodingHelper;
+
 class View {
     private $layout = 'default';
     private $config;
@@ -18,6 +20,9 @@ class View {
     public function render($view, $data = []) {
         try {
             error_log("DEBUG View::render - Начало рендера вида: {$view}");
+            
+            // Устанавливаем правильную кодировку UTF-8
+            EncodingHelper::setUtf8Headers();
             
             // Объединяем локальные данные с глобальными
             $data = array_merge($this->globalData, $data);
@@ -103,5 +108,22 @@ class View {
      */
     public function setGlobalData($data) {
         $this->globalData = array_merge($this->globalData, $data);
+    }
+    
+    /**
+     * Возвращает CSS-класс цвета для типа склада
+     * 
+     * @param string $warehouseTypeCode Код типа склада
+     * @return string CSS-класс цвета
+     */
+    public function getWarehouseTypeColor($warehouseTypeCode) {
+        $colors = [
+            'material' => 'primary',    // Материальный склад - синий
+            'tool' => 'info',           // Инструментальный склад - голубой
+            'oil' => 'warning',         // Склад ГСМ - желтый/оранжевый
+            'autoparts' => 'success',   // Склад автозапчастей - зеленый
+        ];
+        
+        return $colors[$warehouseTypeCode] ?? 'secondary'; // По умолчанию серый
     }
 } 
