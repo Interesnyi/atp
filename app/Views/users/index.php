@@ -4,9 +4,11 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Пользователи системы</h5>
+                    <?php if ($canCreate): ?>
                     <a href="/users/create" class="btn btn-primary btn-sm">
                         <i class="bi bi-plus-circle"></i> Добавить пользователя
                     </a>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body">
                     <?php if (isset($_SESSION['success'])): ?>
@@ -56,15 +58,21 @@
                                             <td><?= date('d.m.Y H:i', strtotime($user['created_at'] ?? date('Y-m-d H:i:s'))) ?></td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
+                                                    <!-- Просмотр всегда доступен с правом users.view -->
                                                     <a href="/users/show/<?= $user['id'] ?>" class="btn btn-outline-primary" title="Просмотр">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
+                                                    
+                                                    <?php if ($canEdit): ?>
                                                     <a href="/users/edit/<?= $user['id'] ?>" class="btn btn-outline-secondary" title="Редактировать">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
+                                                    <?php endif; ?>
+                                                    
                                                     <?php 
-                                                    $currentUserId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : (isset($_SESSION['id']) ? $_SESSION['id'] : 0); 
-                                                    if ($user['id'] != $currentUserId): 
+                                                    $currentUserId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : (isset($_SESSION['id']) ? $_SESSION['id'] : 0);
+                                                    // Показываем кнопку удаления, если есть право и это не текущий пользователь
+                                                    if ($canDelete && $user['id'] != $currentUserId): 
                                                     ?>
                                                         <button type="button" class="btn btn-outline-danger" title="Удалить" 
                                                             data-bs-toggle="modal" data-bs-target="#deleteUserModal<?= $user['id'] ?>">
@@ -74,6 +82,7 @@
                                                 </div>
                                                 
                                                 <!-- Модальное окно подтверждения удаления -->
+                                                <?php if ($canDelete && $user['id'] != $currentUserId): ?>
                                                 <div class="modal fade" id="deleteUserModal<?= $user['id'] ?>" tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
@@ -91,6 +100,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

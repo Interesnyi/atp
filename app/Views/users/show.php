@@ -8,9 +8,11 @@
                         <a href="/users" class="btn btn-sm btn-outline-secondary me-1">
                             <i class="bi bi-arrow-left"></i> К списку
                         </a>
+                        <?php if ($canEdit): ?>
                         <a href="/users/edit/<?= $user['id'] ?>" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil"></i> Редактировать
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 

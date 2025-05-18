@@ -11,6 +11,15 @@ abstract class Controller {
     public function __construct() {
         $this->config = require __DIR__ . '/../Config/config.php';
         $this->view = new View();
+        $this->middlewares = [];
+        
+        // Загружаем права пользователя
+        $userPermissions = $this->loadUserPermissions();
+        
+        // Передаем права в шаблон для использования в навигации
+        $this->view->setGlobalData([
+            'userPermissions' => $userPermissions
+        ]);
     }
 
     /**
@@ -18,40 +27,67 @@ abstract class Controller {
      * @param string $middleware Тип middleware (auth, permission)
      * @param mixed $options Дополнительные параметры
      */
-    protected function middleware($middleware, $options = null) {
-        $this->middlewares[] = [
-            'type' => $middleware,
-            'options' => $options
-        ];
-        
-        // Применяем middleware
-        $this->applyMiddleware($middleware, $options);
-    }
-    
-    /**
-     * Применяет middleware к текущему запросу
-     * @param string $middleware Тип middleware
-     * @param mixed $options Дополнительные параметры
-     */
-    protected function applyMiddleware($middleware, $options = null) {
-        switch ($middleware) {
+    protected function middleware($type, $options = []) {
+        switch ($type) {
             case 'auth':
-                $this->authMiddleware();
+                // Проверка авторизации
+                if (!isset($_SESSION['id']) && !isset($_SESSION['user_id'])) {
+                    header('Location: /login');
+                    exit;
+                }
+                break;
+                
+            case 'role':
+                // Проверка роли пользователя
+                if (!isset($_SESSION['role'])) {
+                    header('Location: /login');
+                    exit;
+                }
+                
+                $allowedRoles = is_array($options) ? $options : [$options];
+                
+                if (!in_array($_SESSION['role'], $allowedRoles)) {
+                    $this->renderForbidden('У вас нет доступа к этому разделу');
+                    exit;
+                }
+                break;
+                
+            case 'permission':
+                // Проверка конкретного права доступа
+                if (!isset($_SESSION['role'])) {
+                    header('Location: /login');
+                    exit;
+                }
+                
+                $requiredPermission = $options;
+                
+                // Администратор имеет доступ ко всему
+                if ($_SESSION['role'] === 'admin') {
+                    break;
+                }
+                
+                // Для остальных проверяем наличие права
+                $permissionModel = new \App\Models\Permission();
+                $hasPermission = $permissionModel->hasPermission($_SESSION['role'], $requiredPermission);
+                
+                if (!$hasPermission) {
+                    $this->renderForbidden('У вас нет необходимых прав для выполнения этого действия');
+                    exit;
+                }
                 break;
         }
     }
     
     /**
-     * Middleware для проверки авторизации
+     * Отображение страницы 403 с сообщением
      */
-    protected function authMiddleware() {
-        if (!isset($_SESSION['user_id']) && !isset($_SESSION['id'])) {
-            // Сохраняем URL для редиректа после авторизации
-            $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
-            
-            // Перенаправляем на страницу входа
-            $this->redirect('/login');
-        }
+    protected function renderForbidden($message = 'Доступ запрещен') {
+        header("HTTP/1.0 403 Forbidden");
+        $this->view('error/403', [
+            'title' => '403 - Доступ запрещен',
+            'message' => $message
+        ]);
+        exit;
     }
 
     protected function loadModel($model) {
@@ -145,5 +181,50 @@ abstract class Controller {
             'message' => $message
         ]);
         exit;
+    }
+
+    /**
+     * Загружает права пользователя и передает их в шаблон
+     */
+    protected function loadUserPermissions() {
+        if (isset($_SESSION['role'])) {
+            $role = $_SESSION['role'];
+            
+            // Для админа не нужно загружать права, он имеет доступ ко всему
+            if ($role === 'admin') {
+                return [];
+            }
+            
+            // Загружаем права для текущей роли
+            $permissionModel = new \App\Models\Permission();
+            $permissions = $permissionModel->getPermissionsByRole($role);
+            
+            // Формируем ассоциативный массив для быстрой проверки
+            $userPermissions = [];
+            foreach ($permissions as $permission) {
+                $userPermissions[$permission['slug']] = true;
+            }
+            
+            return $userPermissions;
+        }
+        
+        return [];
+    }
+
+    /**
+     * Проверяет, есть ли у текущего пользователя заданное право
+     */
+    protected function hasPermission($slug) {
+        if (!isset($_SESSION['role'])) {
+            return false;
+        }
+        
+        // Администратор имеет все права
+        if ($_SESSION['role'] === 'admin') {
+            return true;
+        }
+        
+        $permissionModel = new \App\Models\Permission();
+        return $permissionModel->hasPermission($_SESSION['role'], $slug);
     }
 } 

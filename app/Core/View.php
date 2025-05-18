@@ -5,6 +5,7 @@ namespace App\Core;
 class View {
     private $layout = 'default';
     private $config;
+    private $globalData = [];
 
     public function __construct() {
         $this->config = require __DIR__ . '/../Config/config.php';
@@ -17,6 +18,10 @@ class View {
     public function render($view, $data = []) {
         try {
             error_log("DEBUG View::render - Начало рендера вида: {$view}");
+            
+            // Объединяем локальные данные с глобальными
+            $data = array_merge($this->globalData, $data);
+            
             $viewContent = $this->renderView($view, $data);
             
             error_log("DEBUG View::render - Вид отрендерен, длина контента: " . strlen($viewContent));
@@ -25,9 +30,11 @@ class View {
                 error_log("DEBUG View::render - Начало рендера макета: {$this->layout}");
                 $result = $this->renderLayout($viewContent, $data);
                 error_log("DEBUG View::render - Макет отрендерен, длина контента: " . strlen($result));
+                // Важно: возвращаем результат, а не выводим его напрямую
                 return $result;
             }
             
+            // Важно: возвращаем результат, а не выводим его напрямую
             return $viewContent;
         } catch (\Exception $e) {
             error_log("ОШИБКА в View::render - " . $e->getMessage());
@@ -89,5 +96,12 @@ class View {
 
     public function url($path = '') {
         return $this->config['app']['url'] . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Установка глобальных данных, доступных во всех шаблонах
+     */
+    public function setGlobalData($data) {
+        $this->globalData = array_merge($this->globalData, $data);
     }
 } 

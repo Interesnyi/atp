@@ -117,4 +117,44 @@ class Database {
             throw $e;
         }
     }
+
+    /**
+     * Выполняет запрос к базе данных без возврата результата (INSERT, UPDATE, DELETE)
+     */
+    public function execute($sql, $params = []) {
+        try {
+            error_log("DEBUG Database::execute - SQL: {$sql}");
+            error_log("DEBUG Database::execute - Params: " . json_encode($params));
+            
+            $stmt = $this->query($sql, $params);
+            $rowCount = $stmt->rowCount();
+            
+            error_log("DEBUG Database::execute - Affected rows: {$rowCount}");
+            return $rowCount;
+        } catch (PDOException $e) {
+            error_log("ОШИБКА Database::execute - " . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    /**
+     * Начало транзакции
+     */
+    public function beginTransaction() {
+        return $this->connection->beginTransaction();
+    }
+    
+    /**
+     * Подтверждение транзакции
+     */
+    public function commit() {
+        return $this->connection->commit();
+    }
+    
+    /**
+     * Откат транзакции
+     */
+    public function rollback() {
+        return $this->connection->rollBack();
+    }
 } 

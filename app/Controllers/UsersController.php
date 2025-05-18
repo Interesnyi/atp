@@ -10,8 +10,10 @@ class UsersController extends Controller {
 
     public function __construct() {
         parent::__construct();
-        // Проверяем авторизацию для всех методов, кроме специальных
+        // Проверяем авторизацию для всех методов
         $this->middleware('auth');
+        // Доступ только с правом просмотра пользователей
+        $this->middleware('permission', 'users.view');
         $this->userModel = new User();
     }
 
@@ -33,7 +35,10 @@ class UsersController extends Controller {
             // Стандартное отображение через механизм шаблонов
             $this->view('users/index', [
                 'title' => 'Пользователи',
-                'users' => $users
+                'users' => $users,
+                'canCreate' => $this->hasPermission('users.create'),
+                'canEdit' => $this->hasPermission('users.edit'),
+                'canDelete' => $this->hasPermission('users.delete')
             ]);
             
         } catch (\Exception $e) {
@@ -50,6 +55,9 @@ class UsersController extends Controller {
      * Отображение формы создания пользователя
      */
     public function create() {
+        // Проверка прав на создание пользователей
+        $this->middleware('permission', 'users.create');
+        
         $this->view('users/create', [
             'title' => 'Создание пользователя'
         ]);
@@ -60,6 +68,9 @@ class UsersController extends Controller {
      */
     public function store() {
         try {
+            // Проверка прав на создание пользователей
+            $this->middleware('permission', 'users.create');
+            
             // Включаем отображение всех ошибок для отладки
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -149,6 +160,8 @@ class UsersController extends Controller {
      */
     public function show($params) {
         try {
+            // Права на просмотр пользователей проверены в конструкторе
+            
             // Включаем отображение всех ошибок для отладки
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -178,7 +191,9 @@ class UsersController extends Controller {
             echo "<!-- DEBUG show: перед вызовом render -->\n";
             $this->view('users/show', [
                 'title' => 'Профиль пользователя',
-                'user' => $user
+                'user' => $user,
+                'canEdit' => $this->hasPermission('users.edit'),
+                'canDelete' => $this->hasPermission('users.delete')
             ]);
             echo "<!-- DEBUG show: после вызова render -->\n";
             
@@ -197,6 +212,9 @@ class UsersController extends Controller {
      */
     public function edit($params) {
         try {
+            // Проверка прав на редактирование пользователей
+            $this->middleware('permission', 'users.edit');
+            
             // Включаем отображение всех ошибок для отладки
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -245,6 +263,9 @@ class UsersController extends Controller {
      */
     public function update($params) {
         try {
+            // Проверка прав на редактирование пользователей
+            $this->middleware('permission', 'users.edit');
+            
             // Включаем отображение всех ошибок для отладки
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -335,6 +356,9 @@ class UsersController extends Controller {
      * Удаление пользователя
      */
     public function delete($params) {
+        // Проверка прав на удаление пользователей
+        $this->middleware('permission', 'users.delete');
+        
         $userId = $params['id'] ?? 0;
         
         // Проверяем, существует ли пользователь

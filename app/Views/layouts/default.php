@@ -112,26 +112,54 @@
             <?php if (isset($_SESSION['user_id']) || isset($_SESSION['id'])): ?>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <?php // Проверки на доступ к разным разделам ?>
+                    
+                    <?php $role = $_SESSION['role'] ?? 'user'; ?>
+                    
+                    <?php // Раздел "Панель управления" ?>
+                    <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['dashboard.access'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">
                             <i class="bi bi-speedometer2"></i> Панель управления
                         </a>
                     </li>
+                    <?php endif; ?>
+                    
+                    <?php // Раздел "Финансы" ?>
+                    <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['finance.view'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/balance">
                             <i class="bi bi-cash-stack"></i> Финансы
                         </a>
                     </li>
+                    <?php endif; ?>
+                    
+                    <?php // Раздел "Склад масел" ?>
+                    <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['storage.view'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/maslosklad">
                             <i class="bi bi-boxes"></i> Склад масел
                         </a>
                     </li>
+                    <?php endif; ?>
+                    
+                    <?php // Раздел "Пользователи" ?>
+                    <?php if ($role === 'admin' || isset($userPermissions['users.view'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/users">
                             <i class="bi bi-people"></i> Пользователи
                         </a>
                     </li>
+                    <?php endif; ?>
+                    
+                    <?php // Раздел "Управление ролями" - только для администраторов ?>
+                    <?php if ($role === 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roles">
+                            <i class="bi bi-shield-lock"></i> Управление ролями
+                        </a>
+                    </li>
+                    <?php endif; ?>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
