@@ -28,14 +28,14 @@ class Operation extends Model {
                     w.name as warehouse_name,
                     ot.name as operation_type_name,
                     s.name as supplier_name,
-                    c.name as customer_name
+                    c.name as buyer_name
                 FROM {$this->table} o
                 JOIN items i ON o.item_id = i.id
                 JOIN warehouses w ON o.warehouse_id = w.id
                 JOIN warehouse_types wt ON w.type_id = wt.id
                 JOIN operation_types ot ON o.operation_type_id = ot.id
                 LEFT JOIN suppliers s ON o.supplier_id = s.id
-                LEFT JOIN customers c ON o.customer_id = c.id
+                LEFT JOIN buyers c ON o.buyer_id = c.id
                 WHERE o.is_deleted = 0";
         
         $params = [];
@@ -84,14 +84,14 @@ class Operation extends Model {
                     w.name as warehouse_name,
                     ot.name as operation_type_name,
                     s.name as supplier_name,
-                    c.name as customer_name
+                    c.name as buyer_name
                 FROM {$this->table} o
                 JOIN items i ON o.item_id = i.id
                 JOIN warehouses w ON o.warehouse_id = w.id
                 JOIN warehouse_types wt ON w.type_id = wt.id
                 JOIN operation_types ot ON o.operation_type_id = ot.id
                 LEFT JOIN suppliers s ON o.supplier_id = s.id
-                LEFT JOIN customers c ON o.customer_id = c.id
+                LEFT JOIN buyers c ON o.buyer_id = c.id
                 WHERE o.id = ? AND o.is_deleted = 0";
         return $this->db->fetch($sql, [$id]);
     }
@@ -108,7 +108,7 @@ class Operation extends Model {
         try {
             $sql = "INSERT INTO {$this->table} 
                     (item_id, warehouse_id, operation_type_id, quantity, volume, 
-                    document_number, operation_date, supplier_id, customer_id, 
+                    document_number, operation_date, supplier_id, buyer_id, 
                     price, total_cost, description, is_deleted) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
             
@@ -121,7 +121,7 @@ class Operation extends Model {
                 $data['document_number'] ?? null,
                 $data['operation_date'] ?? date('Y-m-d H:i:s'),
                 $data['supplier_id'] ?? null,
-                $data['customer_id'] ?? null,
+                $data['buyer_id'] ?? null,
                 $data['price'] ?? null,
                 $data['total_cost'] ?? null,
                 $data['description'] ?? null
@@ -179,7 +179,7 @@ class Operation extends Model {
             $sql = "UPDATE {$this->table} 
                     SET item_id = ?, warehouse_id = ?, operation_type_id = ?, 
                         quantity = ?, volume = ?, document_number = ?, 
-                        operation_date = ?, supplier_id = ?, customer_id = ?, 
+                        operation_date = ?, supplier_id = ?, buyer_id = ?, 
                         price = ?, total_cost = ?, description = ? 
                     WHERE id = ?";
             
@@ -192,7 +192,7 @@ class Operation extends Model {
                 $data['document_number'] ?? null,
                 $data['operation_date'] ?? date('Y-m-d H:i:s'),
                 $data['supplier_id'] ?? null,
-                $data['customer_id'] ?? null,
+                $data['buyer_id'] ?? null,
                 $data['price'] ?? null,
                 $data['total_cost'] ?? null,
                 $data['description'] ?? null,
@@ -396,5 +396,48 @@ class Operation extends Model {
                 SET quantity = ?, volume = ?, last_update = NOW() 
                 WHERE item_id = ? AND warehouse_id = ?";
         return $this->db->execute($sql, [$quantity, $volume, $itemId, $warehouseId]) > 0;
+    }
+
+    /**
+     * Подсчет количества операций по типу
+     *
+     * @param int $warehouseId ID склада
+     * @param int $operationType ID типа операции
+     * @return int
+     */
+    public function countOperationsByType($warehouseId, $operationType) {
+        $sql = "SELECT COUNT(*) as count 
+                FROM {$this->table} 
+                WHERE warehouse_id = ? 
+                AND operation_type_id = ? 
+                AND is_deleted = 0";
+        
+        $result = $this->db->fetch($sql, [$warehouseId, $operationType]);
+        return $result ? (int)$result['count'] : 0;
+    }
+
+    /**
+     * Получение последних операций для склада
+     *
+     * @param int $warehouseId ID склада
+     * @param int $limit Максимальное количество операций
+     * @return array
+     */
+    public function getRecentOperations($warehouseId, $limit = 10) {
+        $sql = "SELECT o.*, 
+                    i.name as item_name,
+                    i.unit,
+                    ot.name as operation_type_name,
+                    u.username
+                FROM {$this->table} o
+                JOIN items i ON o.item_id = i.id
+                JOIN operation_types ot ON o.operation_type_id = ot.id
+                LEFT JOIN users u ON o.created_by = u.id
+                WHERE o.warehouse_id = ? 
+                AND o.is_deleted = 0
+                ORDER BY o.created_at DESC
+                LIMIT ?";
+        
+        return $this->db->fetchAll($sql, [$warehouseId, $limit]);
     }
 } 

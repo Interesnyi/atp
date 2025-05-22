@@ -8,9 +8,9 @@ session_start();
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 
-// Если пользователь авторизован, перенаправляем на /maslosklad/
+// Если пользователь авторизован, перенаправляем на /warehouses/
 if (isset($_SESSION["id"]) && $_SESSION["id"] > 0) {
-    header("location: /maslosklad/");
+    header("location: /warehouses/");
     exit;
 }
 

@@ -1,3 +1,10 @@
+# Включаем движок перезаписи URL
 RewriteEngine On
-RewriteRule ^$ public/ [L]
-RewriteRule (.*) public/$1 [L] 
+
+# Если запрос не к файлу или директории, перенаправляем в public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1 [L,QSA]
+
+# Если запрос к корню, перенаправляем в public/
+RewriteRule ^$ public/ [L] 

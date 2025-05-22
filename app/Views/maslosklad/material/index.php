@@ -1,210 +1,151 @@
-<?php include_once __DIR__ . '/../../layout/header.php'; ?>
+<?php include_once __DIR__ . '/../../layouts/default_header.php'; ?>
 
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-12">
+        <!-- Боковое меню навигации -->
+        <div class="col-md-3">
             <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <h4>Материальный склад: <?= htmlspecialchars($warehouse['name']) ?></h4>
-                            <p class="text-sm mb-0">
-                                <i class="fa fa-warehouse text-primary" aria-hidden="true"></i>
-                                <span class="font-weight-bold ms-1">Управление материальными ценностями</span>
-                            </p>
-                            <?php if (!empty($warehouse['location'])): ?>
-                                <p class="text-xs text-muted">
-                                    <i class="fas fa-map-marker-alt me-1"></i> <?= htmlspecialchars($warehouse['location']) ?>
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-lg-6 text-end d-flex flex-column justify-content-end">
-                            <div class="btn-group mb-2">
-                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/reception" class="btn btn-sm bg-gradient-success">
-                                    <i class="fas fa-plus-circle me-1"></i> Приёмка
-                                </a>
-                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/issue" class="btn btn-sm bg-gradient-warning">
-                                    <i class="fas fa-minus-circle me-1"></i> Выдача
-                                </a>
-                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/writeoff" class="btn btn-sm bg-gradient-danger">
-                                    <i class="fas fa-trash-alt me-1"></i> Списание
-                                </a>
-                                <?php if (isset($userPermissions['maslosklad.manage'])): ?>
-                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/inventory" class="btn btn-sm bg-gradient-info">
-                                    <i class="fas fa-clipboard-check me-1"></i> Инвентаризация
-                                </a>
-                                <?php endif; ?>
-                            </div>
-                            <div>
-                                <a href="/maslosklad" class="btn btn-sm bg-gradient-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i> К списку складов
-                                </a>
-                                <button type="button" class="btn btn-sm bg-gradient-dark" id="btnPrint">
-                                    <i class="fas fa-print me-1"></i> Печать
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Материальный склад</h5>
                 </div>
-                <div class="card-body px-0 pt-0 pb-2">
-                    <div class="p-3">
-                        <?php if (empty($categories)): ?>
-                            <div class="alert alert-info">
-                                <strong>Внимание!</strong> Для этого склада не созданы категории товаров.
-                                <?php if (isset($userPermissions['maslosklad.manage'])): ?>
-                                    <a href="/maslosklad/categories" class="alert-link">Создать категории</a>
-                                <?php endif; ?>
-                            </div>
-                        <?php elseif (empty($inventoryByCategory)): ?>
-                            <div class="alert alert-info">
-                                <strong>Склад пуст!</strong> На этом складе нет товаров.
-                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/reception" class="alert-link">Оформить приёмку</a>
-                            </div>
-                        <?php else: ?>
-                            <!-- Поиск по товарам -->
-                            <div class="mb-4">
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Поиск товара...">
-                                </div>
-                            </div>
-
-                            <!-- Вкладки категорий -->
-                            <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#all" role="tab">
-                                        Все товары
-                                    </a>
-                                </li>
-                                <?php foreach ($categories as $category): ?>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#category-<?= $category['id'] ?>" role="tab">
-                                            <?= htmlspecialchars($category['name']) ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-
-                            <!-- Содержимое вкладок -->
-                            <div class="tab-content">
-                                <!-- Вкладка "Все товары" -->
-                                <div class="tab-pane fade show active" id="all" role="tabpanel">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Наименование</th>
-                                                    <th>Категория</th>
-                                                    <th>Артикул</th>
-                                                    <th class="text-center">Количество</th>
-                                                    <th>Единица</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="inventory-items">
-                                                <?php 
-                                                $totalItems = 0;
-                                                foreach ($inventoryByCategory as $categoryItems): 
-                                                    foreach ($categoryItems as $item):
-                                                        $totalItems++;
-                                                ?>
-                                                    <tr class="item-row" data-search="<?= htmlspecialchars(mb_strtolower($item['item_name'] . ' ' . $item['item_article'] . ' ' . $item['category_name'])) ?>">
-                                                        <td><?= htmlspecialchars($item['item_name']) ?></td>
-                                                        <td><?= htmlspecialchars($item['category_name']) ?></td>
-                                                        <td><?= htmlspecialchars($item['item_article'] ?? '-') ?></td>
-                                                        <td class="text-center">
-                                                            <span class="<?= ($item['quantity'] <= 0) ? 'text-danger' : '' ?>">
-                                                                <?= number_format($item['quantity'], 2, '.', ' ') ?>
-                                                            </span>
-                                                        </td>
-                                                        <td><?= htmlspecialchars($item['unit'] ?? 'шт') ?></td>
-                                                        <td>
-                                                            <a href="/maslosklad/material/<?= $warehouse['id'] ?>/item/<?= $item['item_id'] ?>" class="btn btn-sm btn-info">
-                                                                <i class="fas fa-info-circle"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                <?php 
-                                                    endforeach;
-                                                endforeach; 
-                                                ?>
-                                                <?php if ($totalItems === 0): ?>
-                                                    <tr>
-                                                        <td colspan="6" class="text-center py-3">
-                                                            <i class="fas fa-box-open fa-2x text-muted"></i>
-                                                            <p class="text-muted mt-2">На складе нет товаров</p>
-                                                        </td>
-                                                    </tr>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                
-                                <!-- Вкладки по категориям -->
-                                <?php foreach ($categories as $category): ?>
-                                    <div class="tab-pane fade" id="category-<?= $category['id'] ?>" role="tabpanel">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Наименование</th>
-                                                        <th>Артикул</th>
-                                                        <th class="text-center">Количество</th>
-                                                        <th>Единица</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php 
-                                                    $hasItems = false;
-                                                    if (isset($inventoryByCategory[$category['id']])): 
-                                                        foreach ($inventoryByCategory[$category['id']] as $item):
-                                                            $hasItems = true;
-                                                    ?>
-                                                        <tr>
-                                                            <td><?= htmlspecialchars($item['item_name']) ?></td>
-                                                            <td><?= htmlspecialchars($item['item_article'] ?? '-') ?></td>
-                                                            <td class="text-center">
-                                                                <span class="<?= ($item['quantity'] <= 0) ? 'text-danger' : '' ?>">
-                                                                    <?= number_format($item['quantity'], 2, '.', ' ') ?>
-                                                                </span>
-                                                            </td>
-                                                            <td><?= htmlspecialchars($item['unit'] ?? 'шт') ?></td>
-                                                            <td>
-                                                                <a href="/maslosklad/material/<?= $warehouse['id'] ?>/item/<?= $item['item_id'] ?>" class="btn btn-sm btn-info">
-                                                                    <i class="fas fa-info-circle"></i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    <?php 
-                                                        endforeach;
-                                                    endif;
-                                                    
-                                                    if (!$hasItems): 
-                                                    ?>
-                                                        <tr>
-                                                            <td colspan="5" class="text-center py-3">
-                                                                <i class="fas fa-box-open fa-2x text-muted"></i>
-                                                                <p class="text-muted mt-2">В этой категории нет товаров</p>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endif; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>" class="list-group-item list-group-item-action <?= !isset($activeSection) || $activeSection == 'overview' ? 'active' : '' ?>">
+                            <i class="fas fa-home me-2"></i> Обзор
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/inventory" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'inventory' ? 'active' : '' ?>">
+                            <i class="fas fa-boxes me-2"></i> Инвентарь
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/reception" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'reception' ? 'active' : '' ?>">
+                            <i class="fas fa-dolly-flatbed me-2"></i> Приёмка
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/issue" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'issue' ? 'active' : '' ?>">
+                            <i class="fas fa-shipping-fast me-2"></i> Выдача
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/writeoff" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'writeoff' ? 'active' : '' ?>">
+                            <i class="fas fa-trash-alt me-2"></i> Списание
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/operations" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'operations' ? 'active' : '' ?>">
+                            <i class="fas fa-history me-2"></i> Журнал операций
+                        </a>
+                        <a href="/maslosklad/material/<?= $warehouse['id'] ?>/reports" class="list-group-item list-group-item-action <?= isset($activeSection) && $activeSection == 'reports' ? 'active' : '' ?>">
+                            <i class="fas fa-chart-bar me-2"></i> Отчеты
+                        </a>
                     </div>
                 </div>
             </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация о складе</h5>
+                </div>
+                <div class="card-body">
+                    <h6><?= htmlspecialchars($warehouse['name']) ?></h6>
+                    <p class="text-muted">
+                        <i class="fas fa-map-marker-alt me-2"></i> <?= htmlspecialchars($warehouse['location']) ?>
+                    </p>
+                    <p><?= htmlspecialchars($warehouse['description']) ?></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="col-md-9">
+            <?php if (!isset($activeSection) || $activeSection == 'overview'): ?>
+                <!-- Обзор склада -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Обзор склада</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h3><?= isset($totalItems) ? $totalItems : '0' ?></h3>
+                                        <p class="mb-0">Наименований</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3><?= isset($totalReceptions) ? $totalReceptions : '0' ?></h3>
+                                        <p class="mb-0">Приёмок</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h3><?= isset($totalIssues) ? $totalIssues : '0' ?></h3>
+                                        <p class="mb-0">Выдач</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <h3><?= isset($totalWriteoffs) ? $totalWriteoffs : '0' ?></h3>
+                                        <p class="mb-0">Списаний</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Последние операции -->
+                        <h5 class="mt-4 mb-3">Последние операции</h5>
+                        <?php if (isset($recentOperations) && !empty($recentOperations)): ?>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Дата</th>
+                                            <th>Тип</th>
+                                            <th>Товар</th>
+                                            <th>Количество</th>
+                                            <th>Пользователь</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($recentOperations as $operation): ?>
+                                            <tr>
+                                                <td><?= date('d.m.Y H:i', strtotime($operation['created_at'])) ?></td>
+                                                <td>
+                                                    <?php if ($operation['type'] == 'reception'): ?>
+                                                        <span class="badge bg-success">Приёмка</span>
+                                                    <?php elseif ($operation['type'] == 'issue'): ?>
+                                                        <span class="badge bg-info">Выдача</span>
+                                                    <?php elseif ($operation['type'] == 'writeoff'): ?>
+                                                        <span class="badge bg-warning">Списание</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><?= htmlspecialchars($operation['item_name']) ?></td>
+                                                <td><?= $operation['quantity'] ?> <?= htmlspecialchars($operation['unit']) ?></td>
+                                                <td><?= htmlspecialchars($operation['username']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-info">Нет недавних операций</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <?php
+            // Здесь будет подключаться соответствующий шаблон в зависимости от активного раздела
+            if (isset($content)) {
+                echo $content;
+            }
+            ?>
         </div>
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../../layout/footer.php'; ?>
+<?php include_once __DIR__ . '/../../layouts/default_footer.php'; ?>
 
 <script>
 $(document).ready(function() {

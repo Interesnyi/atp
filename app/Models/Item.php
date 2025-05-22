@@ -14,27 +14,17 @@ class Item extends Model {
      * @return array
      */
     public function getAllItems($filters = []) {
-        $sql = "SELECT i.*, c.name as category_name, wt.name as warehouse_type_name
+        $sql = "SELECT i.*, c.name as category_name
                 FROM {$this->table} i
-                JOIN categories c ON i.category_id = c.id
-                JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
+                LEFT JOIN items_categories c ON i.category_id = c.id
                 WHERE i.is_deleted = 0";
-        
         $params = [];
-        
         // Применение фильтров
         if (!empty($filters['category_id'])) {
             $sql .= " AND i.category_id = ?";
             $params[] = $filters['category_id'];
         }
-        
-        if (!empty($filters['warehouse_type_id'])) {
-            $sql .= " AND c.warehouse_type_id = ?";
-            $params[] = $filters['warehouse_type_id'];
-        }
-        
         $sql .= " ORDER BY i.name";
-        
         return $this->db->fetchAll($sql, $params);
     }
     
@@ -45,10 +35,9 @@ class Item extends Model {
      * @return array|false
      */
     public function getItemById($id) {
-        $sql = "SELECT i.*, c.name as category_name, wt.name as warehouse_type_name
+        $sql = "SELECT i.*, c.name as category_name
                 FROM {$this->table} i
-                JOIN categories c ON i.category_id = c.id
-                JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
+                LEFT JOIN items_categories c ON i.category_id = c.id
                 WHERE i.id = ? AND i.is_deleted = 0";
         return $this->db->fetch($sql, [$id]);
     }
@@ -177,5 +166,16 @@ class Item extends Model {
         }
         
         return $result;
+    }
+    
+    public function searchItems($query) {
+        $sql = "SELECT i.*, c.name as category_name
+                FROM {$this->table} i
+                LEFT JOIN items_categories c ON i.category_id = c.id
+                WHERE i.is_deleted = 0
+                  AND (i.name LIKE ? OR i.article LIKE ? OR c.name LIKE ?)
+                ORDER BY i.name";
+        $like = '%' . $query . '%';
+        return $this->db->fetchAll($sql, [$like, $like, $like]);
     }
 } 

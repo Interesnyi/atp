@@ -368,6 +368,173 @@ class ApiController extends Controller {
     }
     
     /**
+     * Получение данных получателя по ID
+     */
+    public function getBuyer($id) {
+        if (!$this->isAuthenticated()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+            return;
+        }
+        $buyer = (new \App\Models\Buyer())->getBuyerById($id);
+        if (!$buyer) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Получатель не найден']);
+            return;
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'buyer' => $buyer]);
+    }
+
+    /**
+     * Создание нового получателя
+     */
+    public function createBuyer() {
+        if (!$this->isAuthenticated()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+            return;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Метод не поддерживается']);
+            return;
+        }
+        if (empty($_POST['name'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Название получателя не может быть пустым']);
+            return;
+        }
+        $data = [
+            'name' => $_POST['name'],
+            'contact_person' => $_POST['contact_person'] ?? null,
+            'phone' => $_POST['phone'] ?? null,
+            'email' => $_POST['email'] ?? null,
+            'address' => $_POST['address'] ?? null,
+            'description' => $_POST['description'] ?? null
+        ];
+        try {
+            $id = (new \App\Models\Buyer())->createBuyer($data);
+            if ($id) {
+                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'message' => 'Получатель успешно добавлен']);
+                } else {
+                    $_SESSION['success_message'] = 'Получатель успешно добавлен';
+                    header('Location: /warehouses/buyers');
+                    exit;
+                }
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Не удалось добавить получателя']);
+            }
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Ошибка: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Обновление данных получателя
+     */
+    public function updateBuyer($id) {
+        if (!$this->isAuthenticated()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+            return;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Метод не поддерживается']);
+            return;
+        }
+        $buyerModel = new \App\Models\Buyer();
+        $buyer = $buyerModel->getBuyerById($id);
+        if (!$buyer) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Получатель не найден']);
+            return;
+        }
+        if (empty($_POST['name'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Название получателя не может быть пустым']);
+            return;
+        }
+        $data = [
+            'name' => $_POST['name'],
+            'contact_person' => $_POST['contact_person'] ?? null,
+            'phone' => $_POST['phone'] ?? null,
+            'email' => $_POST['email'] ?? null,
+            'address' => $_POST['address'] ?? null,
+            'description' => $_POST['description'] ?? null
+        ];
+        try {
+            $result = $buyerModel->updateBuyer($id, $data);
+            if ($result) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'message' => 'Данные получателя успешно обновлены']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Не удалось обновить данные получателя']);
+            }
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Ошибка: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Удаление получателя
+     */
+    public function deleteBuyer($id) {
+        if (!$this->isAuthenticated()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+            return;
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Метод не поддерживается']);
+            return;
+        }
+        $buyerModel = new \App\Models\Buyer();
+        $buyer = $buyerModel->getBuyerById($id);
+        if (!$buyer) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Получатель не найден']);
+            return;
+        }
+        try {
+            $result = $buyerModel->deleteBuyer($id);
+            if ($result) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'message' => 'Получатель успешно удалён']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Не удалось удалить получателя']);
+            }
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Ошибка: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Поиск получателей по названию
+     */
+    public function searchBuyers() {
+        if (!$this->isAuthenticated()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+            return;
+        }
+        $searchTerm = $_GET['term'] ?? '';
+        $buyers = (new \App\Models\Buyer())->searchBuyers($searchTerm);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'buyers' => $buyers]);
+    }
+    
+    /**
      * Проверка авторизации
      * 
      * @return bool

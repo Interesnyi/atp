@@ -21,21 +21,32 @@ class ComposerStaticInitd3977aee71579a4cee0fcd24baced3f4
     );
 
     public static $classMap = array (
+        'App\\Controllers\\ApiController' => __DIR__ . '/../..' . '/app/Controllers/ApiController.php',
         'App\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Controllers/AuthController.php',
         'App\\Controllers\\DashboardController' => __DIR__ . '/../..' . '/app/Controllers/DashboardController.php',
         'App\\Controllers\\ErrorController' => __DIR__ . '/../..' . '/app/Controllers/ErrorController.php',
         'App\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Controllers/HomeController.php',
+        'App\\Controllers\\MaterialWarehouseController' => __DIR__ . '/../..' . '/app/Controllers/MaterialWarehouseController.php',
         'App\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Controllers/ProfileController.php',
         'App\\Controllers\\RolesController' => __DIR__ . '/../..' . '/app/Controllers/RolesController.php',
         'App\\Controllers\\UsersController' => __DIR__ . '/../..' . '/app/Controllers/UsersController.php',
+        'App\\Controllers\\WarehousesController' => __DIR__ . '/../..' . '/app/Controllers/WarehousesController.php',
         'App\\Core\\Controller' => __DIR__ . '/../..' . '/app/Core/Controller.php',
         'App\\Core\\Database' => __DIR__ . '/../..' . '/app/Core/Database.php',
         'App\\Core\\Model' => __DIR__ . '/../..' . '/app/Core/Model.php',
         'App\\Core\\Router' => __DIR__ . '/../..' . '/app/Core/Router.php',
         'App\\Core\\View' => __DIR__ . '/../..' . '/app/Core/View.php',
         'App\\Helpers\\EncodingHelper' => __DIR__ . '/../..' . '/app/Helpers/EncodingHelper.php',
+        'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
+        'App\\Models\\Customer' => __DIR__ . '/../..' . '/app/Models/Customer.php',
+        'App\\Models\\Inventory' => __DIR__ . '/../..' . '/app/Models/Inventory.php',
+        'App\\Models\\Item' => __DIR__ . '/../..' . '/app/Models/Item.php',
+        'App\\Models\\Operation' => __DIR__ . '/../..' . '/app/Models/Operation.php',
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
+        'App\\Models\\Supplier' => __DIR__ . '/../..' . '/app/Models/Supplier.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Models\\Warehouse' => __DIR__ . '/../..' . '/app/Models/Warehouse.php',
+        'App\\Models\\WarehouseType' => __DIR__ . '/../..' . '/app/Models/WarehouseType.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 

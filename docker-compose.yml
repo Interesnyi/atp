@@ -32,6 +32,17 @@ services:
     ports:
       - "3306:3306"
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=cardicom_user
+      - PMA_PASSWORD=cardicom_pass
+    depends_on:
+      - db
+
   composer:
     image: composer:latest
     volumes:

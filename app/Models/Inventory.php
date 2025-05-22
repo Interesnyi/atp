@@ -176,4 +176,37 @@ class Inventory extends Model {
             return false;
         }
     }
+    
+    /**
+     * Получение отчета по текущим остаткам
+     *
+     * @param int|null $warehouseId ID склада (если null, то по всем складам)
+     * @return array
+     */
+    public function getInventoryReport($warehouseId = null) {
+        $sql = "SELECT i.*, 
+                       items.name as item_name, 
+                       items.article, 
+                       items.unit, 
+                       categories.name as category_name,
+                       warehouses.name as warehouse_name,
+                       warehouse_types.name as warehouse_type_name
+                FROM {$this->table} i
+                JOIN items ON i.item_id = items.id
+                JOIN warehouses ON i.warehouse_id = warehouses.id
+                JOIN warehouse_types ON warehouses.type_id = warehouse_types.id
+                LEFT JOIN categories ON items.category_id = categories.id
+                WHERE i.quantity > 0";
+        
+        if ($warehouseId) {
+            $sql .= " AND i.warehouse_id = ?";
+            $params = [$warehouseId];
+        } else {
+            $params = [];
+        }
+        
+        $sql .= " ORDER BY warehouses.name, categories.name, items.name";
+        
+        return $this->db->fetchAll($sql, $params);
+    }
 } 

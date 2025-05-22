@@ -19,20 +19,24 @@ class Database {
         try {
             // Выводим информацию о конфигурации при отладке
             if ($this->config['app']['debug']) {
-                error_log("Database connection config:");
-                error_log("Host: " . $this->config['db']['host']);
-                error_log("Database: " . $this->config['db']['database']);
-                error_log("User: " . $this->config['db']['user']);
-                error_log("Charset: " . $this->config['db']['charset']);
-                error_log("Collation: " . $this->config['db']['collation']);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection config:" . PHP_EOL, FILE_APPEND);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Host: " . $this->config['db']['host'] . PHP_EOL, FILE_APPEND);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database: " . $this->config['db']['database'] . PHP_EOL, FILE_APPEND);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "User: " . $this->config['db']['user'] . PHP_EOL, FILE_APPEND);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Charset: " . $this->config['db']['charset'] . PHP_EOL, FILE_APPEND);
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Collation: " . $this->config['db']['collation'] . PHP_EOL, FILE_APPEND);
             }
 
-            $dsn = "mysql:host={$this->config['db']['host']};dbname={$this->config['db']['database']};charset={$this->config['db']['charset']}";
+            $dsn = "mysql:host={$this->config['db']['host']};dbname={$this->config['db']['database']}";
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$this->config['db']['charset']} COLLATE {$this->config['db']['collation']}"
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$this->config['db']['charset']} COLLATE {$this->config['db']['collation']}; 
+                                                SET character_set_client = {$this->config['db']['charset']};
+                                                SET character_set_results = {$this->config['db']['charset']};
+                                                SET character_set_connection = {$this->config['db']['charset']};
+                                                SET collation_connection = {$this->config['db']['collation']};"
             ];
 
             $this->connection = new PDO(
@@ -42,19 +46,23 @@ class Database {
                 $options
             );
 
-            // Убедимся что соединение использует utf8mb4
+            // Дополнительно устанавливаем кодировку для текущей сессии
             $this->connection->exec("SET CHARACTER SET {$this->config['db']['charset']}");
             $this->connection->exec("SET NAMES {$this->config['db']['charset']} COLLATE {$this->config['db']['collation']}");
+            $this->connection->exec("SET character_set_client = {$this->config['db']['charset']}");
+            $this->connection->exec("SET character_set_results = {$this->config['db']['charset']}");
+            $this->connection->exec("SET character_set_connection = {$this->config['db']['charset']}");
+            $this->connection->exec("SET collation_connection = {$this->config['db']['collation']}");
             
             // Проверяем соединение
             $this->connection->query('SELECT 1');
             
             if ($this->config['app']['debug']) {
-                error_log("Database connection successful");
+                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection successful" . PHP_EOL, FILE_APPEND);
             }
         } catch (PDOException $e) {
             $error = "Database connection failed: " . $e->getMessage();
-            error_log($error);
+            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . $error . PHP_EOL, FILE_APPEND);
             throw new PDOException($error, (int)$e->getCode());
         }
     }

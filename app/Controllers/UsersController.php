@@ -158,47 +158,22 @@ class UsersController extends Controller {
     /**
      * Отображение данных пользователя
      */
-    public function show($params) {
+    public function show($id) {
         try {
-            // Права на просмотр пользователей проверены в конструкторе
-            
-            // Включаем отображение всех ошибок для отладки
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-            
-            $userId = $params['id'] ?? 0;
-            
-            // Отладка запроса
-            echo "<!-- DEBUG show: получен ID пользователя: {$userId} -->\n";
-            
-            // Получаем данные пользователя
+            $this->middleware('permission', 'users.view');
+            $userId = $id;
             $user = $this->userModel->getUserById($userId);
-            
-            // Отладка полученных данных
-            echo "<!-- DEBUG show: результат getUserById: " . ($user ? 'данные получены' : 'NULL') . " -->\n";
-            if ($user) {
-                echo "<!-- DEBUG show: поля пользователя: " . implode(', ', array_keys($user)) . " -->\n";
-            }
-            
             if (!$user) {
-                echo "<!-- DEBUG show: пользователь не найден, вызываем renderNotFound -->\n";
                 $this->renderNotFound('Пользователь не найден');
                 return;
             }
-            
-            // Отображаем шаблон
-            echo "<!-- DEBUG show: перед вызовом render -->\n";
             $this->view('users/show', [
                 'title' => 'Профиль пользователя',
                 'user' => $user,
                 'canEdit' => $this->hasPermission('users.edit'),
                 'canDelete' => $this->hasPermission('users.delete')
             ]);
-            echo "<!-- DEBUG show: после вызова render -->\n";
-            
         } catch (\Exception $e) {
-            // Отображаем детали ошибки
             echo "<div style='color:red; padding:20px; border:1px solid red;'>";
             echo "<h2>Ошибка в UsersController->show</h2>";
             echo "<p>" . $e->getMessage() . "</p>";
@@ -210,46 +185,20 @@ class UsersController extends Controller {
     /**
      * Отображение формы редактирования
      */
-    public function edit($params) {
+    public function edit($id) {
         try {
-            // Проверка прав на редактирование пользователей
             $this->middleware('permission', 'users.edit');
-            
-            // Включаем отображение всех ошибок для отладки
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
-            error_reporting(E_ALL);
-            
-            $userId = $params['id'] ?? 0;
-            
-            // Отладка запроса
-            echo "<!-- DEBUG edit: получен ID пользователя: {$userId} -->\n";
-            
-            // Получаем данные пользователя
+            $userId = $id;
             $user = $this->userModel->getUserById($userId);
-            
-            // Отладка полученных данных
-            echo "<!-- DEBUG edit: результат getUserById: " . ($user ? 'данные получены' : 'NULL') . " -->\n";
-            if ($user) {
-                echo "<!-- DEBUG edit: поля пользователя: " . implode(', ', array_keys($user)) . " -->\n";
-            }
-            
             if (!$user) {
-                echo "<!-- DEBUG edit: пользователь не найден, вызываем renderNotFound -->\n";
                 $this->renderNotFound('Пользователь не найден');
                 return;
             }
-            
-            // Отображаем шаблон
-            echo "<!-- DEBUG edit: перед вызовом render -->\n";
             $this->view('users/edit', [
                 'title' => 'Редактирование пользователя',
                 'user' => $user
             ]);
-            echo "<!-- DEBUG edit: после вызова render -->\n";
-            
         } catch (\Exception $e) {
-            // Отображаем детали ошибки
             echo "<div style='color:red; padding:20px; border:1px solid red;'>";
             echo "<h2>Ошибка в UsersController->edit</h2>";
             echo "<p>" . $e->getMessage() . "</p>";
@@ -261,7 +210,7 @@ class UsersController extends Controller {
     /**
      * Обновление данных пользователя
      */
-    public function update($params) {
+    public function update($id) {
         try {
             // Проверка прав на редактирование пользователей
             $this->middleware('permission', 'users.edit');
@@ -271,7 +220,7 @@ class UsersController extends Controller {
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
             
-            $userId = $params['id'] ?? 0;
+            $userId = $id;
             
             // Отладка запроса
             error_log("DEBUG update: получен ID пользователя: {$userId}");
@@ -355,11 +304,11 @@ class UsersController extends Controller {
     /**
      * Удаление пользователя
      */
-    public function delete($params) {
+    public function delete($id) {
         // Проверка прав на удаление пользователей
         $this->middleware('permission', 'users.delete');
         
-        $userId = $params['id'] ?? 0;
+        $userId = $id;
         
         // Проверяем, существует ли пользователь
         if (!$this->userModel->getUserById($userId)) {

@@ -83,6 +83,21 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Получатели
+CREATE TABLE IF NOT EXISTS `buyers` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `contact_person` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `description` text COLLATE utf8mb4_unicode_ci,
+    `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Покупатели/получатели
 CREATE TABLE IF NOT EXISTS `customers` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

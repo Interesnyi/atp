@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/../../layout/header.php'; ?>
+<?php include_once __DIR__ . '/../../layouts/default_header.php'; ?>
 
 <div class="container-fluid py-4">
     <div class="row">
@@ -191,7 +191,7 @@
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../../layout/footer.php'; ?>
+<?php include_once __DIR__ . '/../../layouts/default_footer.php'; ?>
 
 <script>
 $(document).ready(function() {

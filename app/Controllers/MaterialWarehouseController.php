@@ -73,11 +73,25 @@ class MaterialWarehouseController extends Controller {
             $inventoryByCategory[$categoryId][] = $item;
         }
         
+        // Получаем статистику операций
+        $totalItems = count($inventory);
+        $totalReceptions = $this->operationModel->countOperationsByType($warehouseId, Operation::TYPE_RECEPTION);
+        $totalIssues = $this->operationModel->countOperationsByType($warehouseId, Operation::TYPE_ISSUE);
+        $totalWriteoffs = $this->operationModel->countOperationsByType($warehouseId, Operation::TYPE_WRITEOFF);
+        
+        // Получаем последние операции для отображения в обзоре
+        $recentOperations = $this->operationModel->getRecentOperations($warehouseId, 10);
+        
         // Передаем данные в представление
         $this->view->render('maslosklad/material/index', [
             'warehouse' => $warehouse,
             'categories' => $categories,
             'inventoryByCategory' => $inventoryByCategory,
+            'totalItems' => $totalItems,
+            'totalReceptions' => $totalReceptions,
+            'totalIssues' => $totalIssues,
+            'totalWriteoffs' => $totalWriteoffs,
+            'recentOperations' => $recentOperations,
             'title' => 'Материальный склад: ' . $warehouse['name']
         ]);
     }
