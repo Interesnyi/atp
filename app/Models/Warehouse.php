@@ -13,11 +13,7 @@ class Warehouse extends Model {
      * @return array
      */
     public function getAllWarehouses() {
-        $sql = "SELECT w.*, wt.name as warehouse_type_name 
-                FROM {$this->table} w
-                JOIN warehouse_types wt ON w.type_id = wt.id
-                WHERE w.is_deleted = 0
-                ORDER BY w.name";
+        $sql = "SELECT * FROM {$this->table} WHERE is_deleted = 0 ORDER BY name";
         return $this->db->fetchAll($sql);
     }
     
@@ -28,10 +24,7 @@ class Warehouse extends Model {
      * @return array|false
      */
     public function getWarehouseById($id) {
-        $sql = "SELECT w.*, wt.name as warehouse_type_name 
-                FROM {$this->table} w
-                JOIN warehouse_types wt ON w.type_id = wt.id
-                WHERE w.id = ? AND w.is_deleted = 0";
+        $sql = "SELECT * FROM {$this->table} WHERE id = ? AND is_deleted = 0";
         return $this->db->fetch($sql, [$id]);
     }
     
@@ -42,8 +35,8 @@ class Warehouse extends Model {
      * @return array
      */
     public function getWarehousesByType($typeId) {
-        $sql = "SELECT * FROM {$this->table} WHERE type_id = ? AND is_deleted = 0";
-        return $this->db->fetchAll($sql, [$typeId]);
+        // Если типы больше не используются, возвращаем все склады
+        return $this->getAllWarehouses();
     }
     
     /**
@@ -53,13 +46,12 @@ class Warehouse extends Model {
      * @return int ID созданного склада
      */
     public function createWarehouse($data) {
-        $sql = "INSERT INTO {$this->table} (name, description, type_id, location, is_deleted) 
-                VALUES (?, ?, ?, ?, 0)";
+        $sql = "INSERT INTO {$this->table} (name, description, location, is_deleted) 
+                VALUES (?, ?, ?, 0)";
         $this->db->execute($sql, [
             $data['name'],
-            $data['description'],
-            $data['type_id'],
-            $data['location']
+            $data['description'] ?? null,
+            $data['location'] ?? null
         ]);
         
         return $this->db->lastInsertId();
@@ -74,13 +66,12 @@ class Warehouse extends Model {
      */
     public function updateWarehouse($id, $data) {
         $sql = "UPDATE {$this->table} 
-                SET name = ?, description = ?, type_id = ?, location = ? 
+                SET name = ?, description = ?, location = ? 
                 WHERE id = ?";
         return $this->db->execute($sql, [
             $data['name'],
-            $data['description'],
-            $data['type_id'],
-            $data['location'],
+            $data['description'] ?? null,
+            $data['location'] ?? null,
             $id
         ]) > 0;
     }

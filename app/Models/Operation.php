@@ -24,7 +24,6 @@ class Operation extends Model {
     public function getAllOperations($filters = []) {
         $sql = "SELECT o.*, 
                     i.name as item_name, 
-                    wt.name as warehouse_type_name,
                     w.name as warehouse_name,
                     ot.name as operation_type_name,
                     s.name as supplier_name,
@@ -32,10 +31,10 @@ class Operation extends Model {
                 FROM {$this->table} o
                 JOIN items i ON o.item_id = i.id
                 JOIN warehouses w ON o.warehouse_id = w.id
-                JOIN warehouse_types wt ON w.type_id = wt.id
                 JOIN operation_types ot ON o.operation_type_id = ot.id
                 LEFT JOIN suppliers s ON o.supplier_id = s.id
                 LEFT JOIN buyers c ON o.buyer_id = c.id
+                LEFT JOIN items_categories cat ON i.category_id = cat.id
                 WHERE o.is_deleted = 0";
         
         $params = [];
@@ -64,6 +63,11 @@ class Operation extends Model {
         if (!empty($filters['date_to'])) {
             $sql .= " AND o.operation_date <= ?";
             $params[] = $filters['date_to'];
+        }
+        
+        if (!empty($filters['warehouse_type_id'])) {
+            $sql .= " AND cat.warehouse_type_id = ?";
+            $params[] = $filters['warehouse_type_id'];
         }
         
         $sql .= " ORDER BY o.operation_date DESC, o.id DESC";
@@ -271,46 +275,67 @@ class Operation extends Model {
     protected function updateInventory($itemId, $warehouseId, $operationTypeId, $quantity, $volume = null) {
         // Получаем текущий остаток
         $inventory = $this->getInventoryItem($itemId, $warehouseId);
-        
-        // Рассчитываем новые значения в зависимости от типа операции
+
+        // Получаем тип товара (наливной или штучный)
+        $itemModel = new \App\Models\Item();
+        $item = $itemModel->getItemById($itemId);
+        $hasVolume = !empty($item['has_volume']);
+
+        // Рассчитываем новые значения в зависимости от типа операции и типа товара
         switch ($operationTypeId) {
             case self::TYPE_RECEPTION:
-                // Приемка - увеличиваем остаток
-                $newQuantity = ($inventory ? $inventory['quantity'] : 0) + $quantity;
-                $newVolume = ($inventory && $inventory['volume'] ? $inventory['volume'] : 0) + ($volume ?? 0);
-                break;
-                
-            case self::TYPE_ISSUE:
-            case self::TYPE_WRITEOFF:
-                // Выдача, списание - уменьшаем остаток
-                $newQuantity = ($inventory ? $inventory['quantity'] : 0) - $quantity;
-                $newVolume = ($inventory && $inventory['volume'] ? $inventory['volume'] : 0) - ($volume ?? 0);
-                
-                // Проверка на отрицательный остаток
-                if ($newQuantity < 0 || ($volume !== null && $newVolume < 0)) {
-                    throw new \Exception("Недостаточно товара на складе");
+                if ($hasVolume) {
+                    // Наливной товар — увеличиваем только объем
+                    $newQuantity = $inventory ? $inventory['quantity'] : 0;
+                    $newVolume = ($inventory && $inventory['volume'] ? $inventory['volume'] : 0) + ($volume ?? 0);
+                } else {
+                    // Штучный товар — увеличиваем только количество
+                    $newQuantity = ($inventory ? $inventory['quantity'] : 0) + $quantity;
+                    $newVolume = $inventory && $inventory['volume'] ? $inventory['volume'] : 0;
                 }
                 break;
-                
-            case self::TYPE_TRANSFER:
-                // Перемещение обрабатывается отдельно, так как затрагивает два склада
-                throw new \Exception("Перемещение должно обрабатываться отдельно");
-                
+            case self::TYPE_ISSUE:
+            case self::TYPE_WRITEOFF:
+                if ($hasVolume) {
+                    $newQuantity = $inventory ? $inventory['quantity'] : 0;
+                    $newVolume = ($inventory && $inventory['volume'] ? $inventory['volume'] : 0) - ($volume ?? 0);
+                    if ($newVolume < 0) {
+                        throw new \Exception("Недостаточно объема на складе");
+                    }
+                } else {
+                    $newQuantity = ($inventory ? $inventory['quantity'] : 0) - $quantity;
+                    $newVolume = $inventory && $inventory['volume'] ? $inventory['volume'] : 0;
+                    if ($newQuantity < 0) {
+                        throw new \Exception("Недостаточно товара на складе");
+                    }
+                }
+                break;
             case self::TYPE_BOTTLING:
-                // Розлив для ГСМ - особая логика
-                // TODO: Реализовать логику розлива
+                // Розлив — уменьшаем объем у исходного товара (например, бочка), увеличиваем у целевого (если реализовано)
+                if ($hasVolume) {
+                    $newQuantity = $inventory ? $inventory['quantity'] : 0;
+                    $newVolume = ($inventory && $inventory['volume'] ? $inventory['volume'] : 0) - ($volume ?? 0);
+                    if ($newVolume < 0) {
+                        throw new \Exception("Недостаточно объема для розлива");
+                    }
+                } else {
+                    // Для штучных товаров розлив не применяется
+                    throw new \Exception("Операция розлива применима только к наливным товарам");
+                }
                 break;
-                
             case self::TYPE_INVENTORY:
-                // Инвентаризация - устанавливаем точное значение
-                $newQuantity = $quantity;
-                $newVolume = $volume ?? 0;
+                if ($hasVolume) {
+                    $newQuantity = $inventory ? $inventory['quantity'] : 0;
+                    $newVolume = $volume ?? 0;
+                } else {
+                    $newQuantity = $quantity;
+                    $newVolume = $inventory && $inventory['volume'] ? $inventory['volume'] : 0;
+                }
                 break;
-                
             default:
                 throw new \Exception("Неизвестный тип операции: {$operationTypeId}");
         }
-        
+
         // Сохраняем или обновляем инвентарный остаток
         if ($inventory) {
             $this->updateInventoryItem($itemId, $warehouseId, $newQuantity, $newVolume);

@@ -95,6 +95,11 @@
                                     </div>
                                 </div>
                                 
+                                <div class="form-group mb-3" id="volumeGroup" style="display:none;">
+                                    <label for="volume" class="form-control-label required">Объём (л)</label>
+                                    <input type="number" class="form-control" id="volume" name="volume" step="0.01" min="0">
+                                    <div class="invalid-feedback">Пожалуйста, укажите объём (л)</div>
+                                </div>
                                 <div class="form-group mb-3">
                                     <label for="quantity" class="form-control-label required">Количество</label>
                                     <input type="number" class="form-control" id="quantity" name="quantity" step="0.01" min="0.01" required>
@@ -240,6 +245,24 @@ $(document).ready(function() {
         let selectedOption = $(this).find('option:selected');
         $('#unit').val(selectedOption.data('unit') || 'шт');
         $('#article').val(selectedOption.data('article') || '');
+        // AJAX для получения has_volume
+        let itemId = $(this).val();
+        if (itemId) {
+            $.getJSON('/api/items/info/' + itemId, function(data) {
+                if (data.success && data.item) {
+                    if (data.item.has_volume == 1) {
+                        $('#volumeGroup').show();
+                        $('#volume').prop('required', true);
+                    } else {
+                        $('#volumeGroup').hide();
+                        $('#volume').prop('required', false).val('');
+                    }
+                }
+            });
+        } else {
+            $('#volumeGroup').hide();
+            $('#volume').prop('required', false).val('');
+        }
     });
     
     // Переключение формы нового товара
@@ -273,6 +296,17 @@ $(document).ready(function() {
     // Валидация и отправка формы
     $('#receptionForm').on('submit', function(e) {
         e.preventDefault();
+        let quantity = parseFloat($('#quantity').val()) || 0;
+        let volume = parseFloat($('#volume').val()) || 0;
+        let isVolumeVisible = $('#volumeGroup').is(':visible');
+        if (isVolumeVisible && quantity <= 0 && volume <= 0) {
+            $('#quantity').addClass('is-invalid');
+            $('#volume').addClass('is-invalid');
+            return;
+        } else {
+            $('#quantity').removeClass('is-invalid');
+            $('#volume').removeClass('is-invalid');
+        }
         
         // Проверка валидации формы
         if (!this.checkValidity()) {

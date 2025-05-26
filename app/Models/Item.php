@@ -14,9 +14,10 @@ class Item extends Model {
      * @return array
      */
     public function getAllItems($filters = []) {
-        $sql = "SELECT i.*, c.name as category_name
+        $sql = "SELECT i.*, c.name as category_name, c.warehouse_type_id, wt.name as warehouse_type_name
                 FROM {$this->table} i
                 LEFT JOIN items_categories c ON i.category_id = c.id
+                LEFT JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
                 WHERE i.is_deleted = 0";
         $params = [];
         // Применение фильтров
@@ -169,13 +170,27 @@ class Item extends Model {
     }
     
     public function searchItems($query) {
-        $sql = "SELECT i.*, c.name as category_name
+        $sql = "SELECT i.*, c.name as category_name, c.warehouse_type_id, wt.name as warehouse_type_name
                 FROM {$this->table} i
                 LEFT JOIN items_categories c ON i.category_id = c.id
+                LEFT JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
                 WHERE i.is_deleted = 0
                   AND (i.name LIKE ? OR i.article LIKE ? OR c.name LIKE ?)
                 ORDER BY i.name";
         $like = '%' . $query . '%';
         return $this->db->fetchAll($sql, [$like, $like, $like]);
+    }
+    
+    public function searchItemsByCategory($query, $categoryId) {
+        $sql = "SELECT i.*, c.name as category_name, c.warehouse_type_id, wt.name as warehouse_type_name
+                FROM {$this->table} i
+                LEFT JOIN items_categories c ON i.category_id = c.id
+                LEFT JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
+                WHERE i.is_deleted = 0
+                  AND i.category_id = ?
+                  AND (i.name LIKE ? OR i.article LIKE ?)
+                ORDER BY i.name";
+        $like = '%' . $query . '%';
+        return $this->db->fetchAll($sql, [$categoryId, $like, $like]);
     }
 } 

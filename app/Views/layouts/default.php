@@ -135,12 +135,22 @@
                     </li>
                     <?php endif; ?>
                     
-                    <?php // Раздел "Склад масел" ?>
+                    <?php // Раздел "Склады" (dropdown вместо "Склад масел") ?>
                     <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['storage.view'])): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/maslosklad">
-                            <i class="bi bi-boxes"></i> Склад масел
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="warehouseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-boxes"></i> Склады
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="warehouseDropdown">
+                            <li><a class="dropdown-item" href="/warehouses">Все склады</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/warehouses/material">Материальный склад</a></li>
+                            <li><a class="dropdown-item" href="/warehouses/tool">Инструментальный склад</a></li>
+                            <li><a class="dropdown-item" href="/warehouses/oil">Склад ГСМ</a></li>
+                            <li><a class="dropdown-item" href="/warehouses/autoparts">Склад автозапчастей</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/warehouses/manage">Управление складами</a></li>
+                        </ul>
                     </li>
                     <?php endif; ?>
                     

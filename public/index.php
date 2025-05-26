@@ -57,8 +57,10 @@ $router->get('warehouses/autoparts', 'WarehousesController', 'autoparts');
 $router->get('warehouses/suppliers', 'WarehousesController', 'suppliers');
 $router->get('warehouses/customers', 'WarehousesController', 'customers');
 $router->get('warehouses/operations', 'OperationsController', 'index');
+$router->get('warehouses/operations/create', 'OperationsController', 'create');
 $router->get('warehouses/reports', 'WarehousesController', 'reports');
 $router->get('warehouses/statistics', 'WarehousesController', 'statistics');
+$router->get('warehouses/inventory', 'WarehousesController', 'inventory');
 
 // Маршруты для управления складами
 $router->post('warehouses/create-warehouse', 'WarehousesController', 'createWarehouse');

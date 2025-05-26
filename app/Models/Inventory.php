@@ -17,6 +17,8 @@ class Inventory extends Model {
         $sql = "SELECT i.*, 
                     it.name as item_name, 
                     it.article as item_article,
+                    it.has_volume,
+                    it.unit,
                     c.name as category_name,
                     w.name as warehouse_name,
                     wt.name as warehouse_type_name
@@ -24,7 +26,7 @@ class Inventory extends Model {
                 JOIN items it ON i.item_id = it.id
                 JOIN warehouses w ON i.warehouse_id = w.id
                 JOIN warehouse_types wt ON w.type_id = wt.id
-                JOIN categories c ON it.category_id = c.id
+                JOIN items_categories c ON it.category_id = c.id
                 WHERE it.is_deleted = 0 AND w.is_deleted = 0";
         
         $params = [];
@@ -45,12 +47,19 @@ class Inventory extends Model {
             $params[] = $filters['warehouse_type_id'];
         }
         
-        if (isset($filters['has_volume']) && $filters['has_volume']) {
-            $sql .= " AND it.has_volume = 1";
+        if (isset($filters['has_volume']) && $filters['has_volume'] !== null) {
+            $sql .= " AND it.has_volume = ?";
+            $params[] = $filters['has_volume'];
         }
         
         if (isset($filters['non_zero_only']) && $filters['non_zero_only']) {
             $sql .= " AND (i.quantity > 0 OR i.volume > 0)";
+        }
+        
+        if (!empty($filters['search'])) {
+            $sql .= " AND (it.name LIKE ? OR it.article LIKE ?)";
+            $params[] = '%' . $filters['search'] . '%';
+            $params[] = '%' . $filters['search'] . '%';
         }
         
         $sql .= " ORDER BY wt.name, w.name, c.name, it.name";
@@ -74,7 +83,7 @@ class Inventory extends Model {
                 FROM {$this->table} i
                 JOIN items it ON i.item_id = it.id
                 JOIN warehouses w ON i.warehouse_id = w.id
-                JOIN categories c ON it.category_id = c.id
+                JOIN items_categories c ON it.category_id = c.id
                 WHERE i.item_id = ? AND i.warehouse_id = ? 
                     AND it.is_deleted = 0 AND w.is_deleted = 0";
         return $this->db->fetch($sql, [$itemId, $warehouseId]);
@@ -111,7 +120,7 @@ class Inventory extends Model {
                     c.name as category_name
                 FROM {$this->table} i
                 JOIN items it ON i.item_id = it.id
-                JOIN categories c ON it.category_id = c.id
+                JOIN items_categories c ON it.category_id = c.id
                 WHERE i.warehouse_id = ? AND it.is_deleted = 0
                 ORDER BY c.name, it.name";
         return $this->db->fetchAll($sql, [$warehouseId]);
@@ -188,14 +197,14 @@ class Inventory extends Model {
                        items.name as item_name, 
                        items.article, 
                        items.unit, 
-                       categories.name as category_name,
+                       items_categories.name as category_name,
                        warehouses.name as warehouse_name,
                        warehouse_types.name as warehouse_type_name
                 FROM {$this->table} i
                 JOIN items ON i.item_id = items.id
                 JOIN warehouses ON i.warehouse_id = warehouses.id
                 JOIN warehouse_types ON warehouses.type_id = warehouse_types.id
-                LEFT JOIN categories ON items.category_id = categories.id
+                LEFT JOIN items_categories ON items.category_id = items_categories.id
                 WHERE i.quantity > 0";
         
         if ($warehouseId) {
@@ -205,7 +214,7 @@ class Inventory extends Model {
             $params = [];
         }
         
-        $sql .= " ORDER BY warehouses.name, categories.name, items.name";
+        $sql .= " ORDER BY warehouses.name, items_categories.name, items.name";
         
         return $this->db->fetchAll($sql, $params);
     }
