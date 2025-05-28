@@ -145,6 +145,15 @@ $router->get('warehouses/buyers', 'BuyersController', 'index');
 $router->get('warehouses/buyers/view/{id}', 'BuyersController', 'show');
 $router->get('warehouses/buyers/edit/{id}', 'BuyersController', 'edit');
 
+// Маршруты для раздела 'Дела'
+$router->get('tasks', 'TasksController', 'index');
+$router->get('tasks/create', 'TasksController', 'create');
+$router->post('tasks/store', 'TasksController', 'store');
+$router->get('tasks/edit/{id}', 'TasksController', 'edit');
+$router->post('tasks/update/{id}', 'TasksController', 'update');
+$router->post('tasks/delete/{id}', 'TasksController', 'delete');
+$router->post('tasks/notify', 'TasksController', 'notify');
+
 // Обработчик 404 ошибки
 $router->setNotFoundHandler('ErrorController', 'notFound');
 

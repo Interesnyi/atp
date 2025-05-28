@@ -2274,3 +2274,483 @@ Stack trace:
   thrown in /var/www/html/app/Controllers/WarehousesController.php on line 876
 [26-May-2025 08:47:15 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
 [26-May-2025 08:47:15 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:03:26 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 09:03:26 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 09:03:26 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 09:03:26 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 09:03:26 UTC] DEBUG UsersController->index: Перед вызовом view
+[26-May-2025 09:03:39 UTC] Login attempt: Email = qwe@qwe.ru
+[26-May-2025 09:03:39 UTC] User table: users
+[26-May-2025 09:03:39 UTC] SQL Query: SELECT * FROM users WHERE loginEmail = ?
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE loginEmail = ? LIMIT 1
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - Params: ["qwe@qwe.ru"]
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 09:03:39 UTC] User found: Yes
+[26-May-2025 09:03:39 UTC] User data: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE email = ? OR loginEmail = ? LIMIT 1
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - Params: ["qwe@qwe.ru","qwe@qwe.ru"]
+[26-May-2025 09:03:39 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 09:04:22 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:04:22 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:10:18 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 09:10:18 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 09:10:18 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 09:10:18 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 09:10:18 UTC] DEBUG UsersController->index: Перед вызовом view
+[26-May-2025 09:10:22 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:10:22 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:10:35 UTC] DEBUG Model::find - SQL запрос: SELECT * FROM users WHERE id = ?, параметры: Array
+(
+    [0] => 6
+)
+
+[26-May-2025 09:10:35 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE id = ?
+[26-May-2025 09:10:35 UTC] DEBUG Database::fetch - Params: [6]
+[26-May-2025 09:10:35 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 09:10:35 UTC] DEBUG Model::find - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 09:13:00 UTC] Query execution failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'w.type_id' in 'on clause'
+SQL: SELECT i.*, 
+                    it.name as item_name, 
+                    it.article as item_article,
+                    it.has_volume,
+                    it.unit,
+                    c.name as category_name,
+                    w.name as warehouse_name,
+                    wt.name as warehouse_type_name
+                FROM inventory i
+                JOIN items it ON i.item_id = it.id
+                JOIN warehouses w ON i.warehouse_id = w.id
+                JOIN warehouse_types wt ON w.type_id = wt.id
+                JOIN items_categories c ON it.category_id = c.id
+                WHERE it.is_deleted = 0 AND w.is_deleted = 0 ORDER BY wt.name, w.name, c.name, it.name
+[26-May-2025 09:13:04 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:13:04 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:09 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:09 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:27 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:27 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:58 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:16:58 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 108
+[26-May-2025 09:20:29 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:20:29 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:20:47 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:20:47 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:21:05 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:21:05 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:21:23 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:21:23 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:28:23 UTC] PHP Warning:  Undefined variable $warehouseTypes in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:28:23 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/index.php on line 104
+[26-May-2025 09:35:08 UTC] DEBUG Database::fetch - SQL: SELECT * FROM warehouse_types WHERE code = ? AND is_deleted = 0
+[26-May-2025 09:35:08 UTC] DEBUG Database::fetch - Params: ["material"]
+[26-May-2025 09:35:08 UTC] DEBUG Database::fetch - Результат: {"id":1,"name":"\u041c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044c\u043d\u044b\u0439 \u0441\u043a\u043b\u0430\u0434","code":"material","description":"\u0421\u043a\u043b\u0430\u0434 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044c\u043d\u044b\u0445 \u0446\u0435\u043d\u043d\u043e\u0441\u0442\u0435\u0439","is_deleted":0,"created_at":"2025-05-18 11:17:42","updated_at":"2025-05-21 11:35:39"}
+[26-May-2025 09:44:23 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:23 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:27 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:27 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:47 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:47 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:57 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:44:57 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 44
+[26-May-2025 09:53:34 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:34 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:38 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:38 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:44 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:44 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:46 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:46 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:51 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:53:51 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:54:12 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:54:12 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:55:36 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 09:55:36 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:30:40 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:30:40 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:33:17 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:33:17 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:33:17 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:33:17 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:33:17 UTC] DEBUG UsersController->index: Перед вызовом view
+[26-May-2025 11:33:42 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:33:42 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:33:57 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:33:57 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[26-May-2025 11:39:18 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:39:18 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:39:18 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:39:18 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:39:18 UTC] DEBUG UsersController->index: Перед вызовом view
+[26-May-2025 11:40:07 UTC] DEBUG store: получены данные формы
+[26-May-2025 11:40:07 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE email = ? OR loginEmail = ? LIMIT 1
+[26-May-2025 11:40:07 UTC] DEBUG Database::fetch - Params: ["atp@atp.ru","atp@atp.ru"]
+[26-May-2025 11:40:07 UTC] DEBUG Database::fetch - Результат: NULL
+[26-May-2025 11:40:11 UTC] DEBUG store: получены данные формы
+[26-May-2025 11:40:11 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE email = ? OR loginEmail = ? LIMIT 1
+[26-May-2025 11:40:11 UTC] DEBUG Database::fetch - Params: ["atp@atp.ru","atp@atp.ru"]
+[26-May-2025 11:40:11 UTC] DEBUG Database::fetch - Результат: NULL
+[26-May-2025 11:40:11 UTC] DEBUG store: попытка создать пользователя с данными: {"username":"\u0425\u0440\u0430\u043c\u043a\u043e\u0432 \u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440 \u0412\u0438\u043a\u0442\u043e\u0440\u043e\u0432\u0438\u0447","email":"atp@atp.ru","password":"$2y$10$lvevoJ.nu7FQ8qNUojArX.mSChgNRUgh5D1ntZMCKyJ31djBJaKUS","role":"user"}
+[26-May-2025 11:40:12 UTC] Query execution failed: SQLSTATE[HY000]: General error: 1364 Field 'jobTitle' doesn't have a default value
+SQL: INSERT INTO users (username, email, loginEmail, firstName, surName, secondName, password, role, created_at) VALUES (?,?,?,?,?,?,?,?,?)
+[26-May-2025 11:48:21 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:48:21 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:48:21 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:48:21 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:53:31 UTC] DEBUG Database::execute - SQL: INSERT INTO tasks (title, description, executor_id, due_date, remind_at, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+[26-May-2025 11:53:31 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T15:00","active"]
+[26-May-2025 11:53:31 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 11:54:36 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 11:54:36 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 11:54:36 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 15:00:00","status":"active","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 11:53:31"}
+[26-May-2025 11:54:36 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:54:36 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:54:36 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:54:36 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:57:48 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 11:57:48 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 11:57:48 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 15:00:00","status":"active","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 11:53:31"}
+[26-May-2025 11:57:48 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:57:48 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:57:48 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:57:48 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:57:53 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET title=?, description=?, executor_id=?, due_date=?, remind_at=?, status=?, updated_at=NOW() WHERE id=?
+[26-May-2025 11:57:53 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T15:00","done","1"]
+[26-May-2025 11:57:53 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 11:57:56 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 11:57:56 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 11:57:56 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 15:00:00","status":"done","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 11:57:53"}
+[26-May-2025 11:57:56 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 11:57:56 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 11:57:56 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 11:57:56 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 11:57:58 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET title=?, description=?, executor_id=?, due_date=?, remind_at=?, status=?, updated_at=NOW() WHERE id=?
+[26-May-2025 11:57:58 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T15:00","active","1"]
+[26-May-2025 11:57:58 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 12:40:44 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 12:40:44 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 12:40:44 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 15:00:00","status":"active","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 11:57:59","notified_at":null}
+[26-May-2025 12:40:44 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 12:40:44 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 12:40:44 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 12:40:44 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 12:40:57 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET title=?, description=?, executor_id=?, due_date=?, remind_at=?, status=?, updated_at=NOW() WHERE id=?
+[26-May-2025 12:40:57 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T15:50","active","1"]
+[26-May-2025 12:40:57 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 12:59:21 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 12:59:21 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 12:59:21 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 15:50:00","status":"active","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 12:40:57","notified_at":null}
+[26-May-2025 12:59:21 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 12:59:21 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 12:59:21 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 12:59:21 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 12:59:32 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET title=?, description=?, executor_id=?, due_date=?, remind_at=?, status=?, updated_at=NOW() WHERE id=?
+[26-May-2025 12:59:32 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T16:10","active","1"]
+[26-May-2025 12:59:32 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 13:14:31 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method App\Models\Task::getTasksToRemind() in /var/www/html/notify_tasks.php:21
+Stack trace:
+#0 /var/www/html/app/Controllers/TasksController.php(69): require_once()
+#1 [internal function]: App\Controllers\TasksController->notify()
+#2 /var/www/html/app/Core/Router.php(85): call_user_func_array(Array, Array)
+#3 /var/www/html/public/index.php(164): App\Core\Router->dispatch()
+#4 {main}
+  thrown in /var/www/html/notify_tasks.php on line 21
+[26-May-2025 13:16:16 UTC] Query execution failed: SQLSTATE[HY000]: General error: 1525 Incorrect DATETIME value: '0000-00-00 00:00:00'
+SQL: SELECT * FROM tasks WHERE status = 'active' AND remind_at IS NOT NULL AND remind_at <= ? AND (notified_at IS NULL OR notified_at = '0000-00-00 00:00:00')
+[26-May-2025 13:29:46 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[26-May-2025 13:29:46 UTC] DEBUG Database::fetch - Params: ["1"]
+[26-May-2025 13:29:46 UTC] DEBUG Database::fetch - Результат: {"id":1,"title":"\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","description":"\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","executor_id":6,"due_date":"2025-06-01","remind_at":"2025-05-26 16:10:00","status":"active","created_at":"2025-05-26 11:53:31","updated_at":"2025-05-26 12:59:32","notified_at":null}
+[26-May-2025 13:29:46 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 13:29:46 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 13:29:46 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 13:29:46 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 13:29:55 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET title=?, description=?, executor_id=?, due_date=?, remind_at=?, status=?, updated_at=NOW() WHERE id=?
+[26-May-2025 13:29:55 UTC] DEBUG Database::execute - Params: ["\u0412\u0437\u0431\u043e\u0434\u0440\u0438\u0442\u044c \u043e\u0445\u0440\u0430\u043d\u0443","\u0412\u0432\u0435\u0441\u0442\u0438 \u0435\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0443\u0447\u0451\u0442 \u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0430","6","2025-06-01","2025-05-26T16:30","active","1"]
+[26-May-2025 13:29:55 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 13:30:02 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 13:30:02 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 13:30:02 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 13:30:02 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 15:01:07 UTC] DEBUG Database::fetch - SQL: SELECT * FROM warehouse_types WHERE code = ? AND is_deleted = 0
+[26-May-2025 15:01:07 UTC] DEBUG Database::fetch - Params: ["material"]
+[26-May-2025 15:01:07 UTC] DEBUG Database::fetch - Результат: {"id":1,"name":"\u041c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044c\u043d\u044b\u0439 \u0441\u043a\u043b\u0430\u0434","code":"material","description":"\u0421\u043a\u043b\u0430\u0434 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044c\u043d\u044b\u0445 \u0446\u0435\u043d\u043d\u043e\u0441\u0442\u0435\u0439","is_deleted":0,"created_at":"2025-05-18 11:17:42","updated_at":"2025-05-21 11:35:39"}
+[26-May-2025 15:05:35 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[26-May-2025 15:05:35 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[26-May-2025 15:05:35 UTC] DEBUG: Количество полученных пользователей: 5
+[26-May-2025 15:05:35 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[26-May-2025 15:10:28 UTC] DEBUG Database::execute - SQL: INSERT INTO tasks (title, description, executor_id, due_date, remind_at, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+[26-May-2025 15:10:28 UTC] DEBUG Database::execute - Params: ["\u041a\u043e\u043d\u0434\u0451\u0440 \u0434\u043b\u044f \u0441\u0442\u0443\u0434\u0435\u043d\u0442\u0430","\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u043a\u043e\u043d\u0434\u0451\u0440 \u0434\u043b\u044f \u0421\u0435\u0440\u0434\u0436\u0438\u043e","1","2025-05-27","2025-05-27T16:00","active"]
+[26-May-2025 15:10:28 UTC] DEBUG Database::execute - Affected rows: 1
+[26-May-2025 15:22:07 UTC] DEBUG Model::find - SQL запрос: SELECT * FROM users WHERE id = ?, параметры: Array
+(
+    [0] => 6
+)
+
+[26-May-2025 15:22:07 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE id = ?
+[26-May-2025 15:22:07 UTC] DEBUG Database::fetch - Params: [6]
+[26-May-2025 15:22:07 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 15:22:07 UTC] DEBUG Model::find - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[26-May-2025 15:22:09 UTC] DEBUG Database::execute - SQL: UPDATE tasks SET notified_at = NOW() WHERE id = ?
+[26-May-2025 15:22:09 UTC] DEBUG Database::execute - Params: [1]
+[26-May-2025 15:22:09 UTC] DEBUG Database::execute - Affected rows: 1
+[27-May-2025 09:01:41 UTC] DEBUG Database::fetch - SQL: SELECT * FROM tasks WHERE id = ?
+[27-May-2025 09:01:41 UTC] DEBUG Database::fetch - Params: ["2"]
+[27-May-2025 09:01:41 UTC] DEBUG Database::fetch - Результат: {"id":2,"title":"\u041a\u043e\u043d\u0434\u0451\u0440 \u0434\u043b\u044f \u0441\u0442\u0443\u0434\u0435\u043d\u0442\u0430","description":"\u0417\u0430\u043a\u0430\u0437\u0430\u0442\u044c \u043a\u043e\u043d\u0434\u0451\u0440 \u0434\u043b\u044f \u0421\u0435\u0440\u0434\u0436\u0438\u043e","executor_id":1,"due_date":"2025-05-27","remind_at":"2025-05-27 16:00:00","status":"active","created_at":"2025-05-26 15:10:29","updated_at":"2025-05-26 15:10:29","notified_at":null}
+[27-May-2025 09:01:41 UTC] DEBUG: User->getAllUsers вызван с параметрами limit=100, offset=0
+[27-May-2025 09:01:41 UTC] DEBUG: SQL запрос: SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?
+[27-May-2025 09:01:41 UTC] DEBUG: Количество полученных пользователей: 5
+[27-May-2025 09:01:41 UTC] DEBUG: Первая запись: Array
+(
+    [id] => 6
+    [surName] => Король
+    [firstName] => Иван
+    [secondName] => Алексеевич
+    [loginEmail] => qwe@qwe.ru
+    [password] => $2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW
+    [username] => Королёв Иван
+    [email] => qwe@qwe.ru
+    [role] => admin
+    [created_at] => 
+    [updated_at] => 2025-05-25 18:45:13
+    [last_login] => 
+    [jobTitle] => Администратор
+)
+
+[28-May-2025 06:01:54 UTC] Login attempt: Email = qwe@qwe.ru
+[28-May-2025 06:01:54 UTC] User table: users
+[28-May-2025 06:01:54 UTC] SQL Query: SELECT * FROM users WHERE loginEmail = ?
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE loginEmail = ? LIMIT 1
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - Params: ["qwe@qwe.ru"]
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[28-May-2025 06:01:54 UTC] User found: Yes
+[28-May-2025 06:01:54 UTC] User data: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - SQL: SELECT * FROM users WHERE email = ? OR loginEmail = ? LIMIT 1
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - Params: ["qwe@qwe.ru","qwe@qwe.ru"]
+[28-May-2025 06:01:54 UTC] DEBUG Database::fetch - Результат: {"id":6,"surName":"\u041a\u043e\u0440\u043e\u043b\u044c","firstName":"\u0418\u0432\u0430\u043d","secondName":"\u0410\u043b\u0435\u043a\u0441\u0435\u0435\u0432\u0438\u0447","loginEmail":"qwe@qwe.ru","password":"$2y$10$OoEnzE3wygeBNcKNQjq36OjNKL1XUS1LGYwazZyVGZtJ6ZoC1YgNW","username":"\u041a\u043e\u0440\u043e\u043b\u0451\u0432 \u0418\u0432\u0430\u043d","email":"qwe@qwe.ru","role":"admin","created_at":null,"updated_at":"2025-05-25 18:45:13","last_login":null,"jobTitle":"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440"}
+[28-May-2025 06:08:19 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[28-May-2025 06:08:19 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[28-May-2025 06:08:23 UTC] PHP Warning:  Undefined variable $categories in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[28-May-2025 06:08:23 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /var/www/html/app/Views/warehouses/operations/index.php on line 57
+[28-May-2025 06:08:32 UTC] Query execution failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'w.type_id' in 'on clause'
+SQL: SELECT i.*, 
+                    it.name as item_name, 
+                    it.article as item_article,
+                    it.has_volume,
+                    it.unit,
+                    c.name as category_name,
+                    w.name as warehouse_name,
+                    wt.name as warehouse_type_name
+                FROM inventory i
+                JOIN items it ON i.item_id = it.id
+                JOIN warehouses w ON i.warehouse_id = w.id
+                JOIN warehouse_types wt ON w.type_id = wt.id
+                JOIN items_categories c ON it.category_id = c.id
+                WHERE it.is_deleted = 0 AND w.is_deleted = 0 ORDER BY wt.name, w.name, c.name, it.name

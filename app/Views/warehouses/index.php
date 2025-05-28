@@ -32,7 +32,6 @@
                                 </div>
                                 <div class="card-body">
                                     <p>Хранение и учет материалов, запасных частей и комплектующих.</p>
-                                    <p class="text-muted"><i class="fas fa-boxes me-2"></i> Доступно складов: —</p>
                                 </div>
                                 <div class="card-footer bg-light">
                                     <a href="/warehouses/material" class="btn btn-primary btn-sm w-100">
@@ -48,7 +47,6 @@
                                 </div>
                                 <div class="card-body">
                                     <p>Хранение и учет инструментов, приспособлений и оборудования.</p>
-                                    <p class="text-muted"><i class="fas fa-tools me-2"></i> Доступно складов: —</p>
                                 </div>
                                 <div class="card-footer bg-light">
                                     <a href="/warehouses/tool" class="btn btn-success btn-sm w-100">
@@ -63,8 +61,7 @@
                                     <h5 class="mb-0 text-dark">Склад ГСМ</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Хранение и учет нефтепродуктов, топлива и горюче-смазочных материалов.</p>
-                                    <p class="text-muted"><i class="fas fa-oil-can me-2"></i> Доступно складов: —</p>
+                                    <p>Хранение и учет горюче-смазочных материалов.</p>
                                 </div>
                                 <div class="card-footer bg-light">
                                     <a href="/warehouses/oil" class="btn btn-warning btn-sm w-100">
@@ -80,7 +77,6 @@
                                 </div>
                                 <div class="card-body">
                                     <p>Хранение и учет запасных частей и комплектующих для автотехники.</p>
-                                    <p class="text-muted"><i class="fas fa-car-battery me-2"></i> Доступно складов: —</p>
                                 </div>
                                 <div class="card-footer bg-light">
                                     <a href="/warehouses/autoparts" class="btn btn-info btn-sm w-100">
@@ -101,15 +97,15 @@
                                 </div>
                                 <div class="card-body">
                                     <p>Управление имуществом склада. Добавление, редактирование, удаление.</p>
-                                    <form method="get" action="/warehouses/items" class="mb-2">
+                                    <form method="get" action="/warehouses/items" class="mb-2" id="itemTypeForm">
                                         <div class="input-group">
-                                            <select name="warehouse_type_id" class="form-select">
+                                            <select name="warehouse_type_id" class="form-select" id="warehouseTypeSelect">
                                                 <option value="">Все типы складов</option>
                                                 <?php foreach ($warehouseTypes as $type): ?>
                                                     <option value="<?= $type['id'] ?>"><?= htmlspecialchars($type['name']) ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                            <button type="submit" class="btn btn-outline-primary">Показать</button>
+                                            <button type="button" class="btn btn-outline-primary" id="showItemsBtn">Показать</button>
                                         </div>
                                     </form>
                                 </div>
@@ -226,5 +222,15 @@
 $(document).ready(function() {
     // Инициализация всплывающих подсказок
     $('[data-bs-toggle="tooltip"]').tooltip();
+
+    document.getElementById('showItemsBtn').onclick = function() {
+        var select = document.getElementById('warehouseTypeSelect');
+        var val = select.value;
+        if (val) {
+            window.location.href = '/warehouses/items?warehouse_type_id=' + encodeURIComponent(val);
+        } else {
+            window.location.href = '/warehouses/items';
+        }
+    };
 });
 </script> 

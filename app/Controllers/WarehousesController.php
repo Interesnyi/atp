@@ -30,17 +30,17 @@ class WarehousesController extends Controller {
         try {
             // Получаем все склады
             $warehouses = $this->warehouseModel->getAllWarehouses();
-            
-            // Группировка по типу больше не нужна
+            // Получаем все типы складов для селекта в разделе 'Имущество'
+            $warehouseTypes = $this->warehouseTypeModel->getAllTypes();
             // Получаем права пользователя для отображения в шаблоне
             $userPermissions = isset($_SESSION['permissions']) ? $_SESSION['permissions'] : [];
             // Передаем данные в представление через шаблонизатор
             $this->view->render('warehouses/index', [
                 'warehouses' => $warehouses,
+                'warehouseTypes' => $warehouseTypes,
                 'title' => 'Система управления складами',
                 'userPermissions' => $userPermissions
             ]);
-            
         } catch (\Exception $e) {
             // Если произошла ошибка, отображаем ее через стандартный шаблон ошибки
             $this->view->render('error/404', [

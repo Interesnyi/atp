@@ -105,7 +105,7 @@
     <!-- Навигационная панель -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">ELDIR</a>
+            <a class="navbar-brand" href="/dashboard">ELDIR</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -122,15 +122,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">
                             <i class="bi bi-speedometer2"></i> Панель управления
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                    
-                    <?php // Раздел "Финансы" ?>
-                    <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['finance.view'])): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/balance">
-                            <i class="bi bi-cash-stack"></i> Финансы
                         </a>
                     </li>
                     <?php endif; ?>
@@ -168,6 +159,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/roles">
                             <i class="bi bi-shield-lock"></i> Управление ролями
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <?php // Раздел "Дела" ?>
+                    <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['tasks.view'])): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks">
+                            <i class="bi bi-list-check"></i> Дела
                         </a>
                     </li>
                     <?php endif; ?>

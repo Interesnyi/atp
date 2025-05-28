@@ -1,4 +1,4 @@
-<?php /** @var array $operations, $suppliers, $buyers, $propertyTypes, $filters, $title, $warehouseTypes */ ?>
+<?php /** @var array $operations, $suppliers, $buyers, $propertyTypes, $filters, $title, $warehouseTypes, $categories */ ?>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -16,6 +16,19 @@
                             <a href="/warehouses/operations/create" class="btn btn-primary btn-sm">
                                 <i class="bi bi-plus me-1"></i> Добавить операцию
                             </a>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <form class="d-flex" id="warehouseTypeForm" method="get" action="/warehouses/operations">
+                                <select name="warehouse_type_id" class="form-select w-auto me-2" id="warehouseTypeSelect">
+                                    <option value="">Все типы складов</option>
+                                    <?php foreach ($warehouseTypes as $wt): ?>
+                                        <option value="<?= $wt['id'] ?>" <?= ($filters['warehouse_type_id'] == $wt['id']) ? 'selected' : '' ?>><?= htmlspecialchars($wt['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <button type="button" class="btn btn-outline-primary" id="showWarehouseTypeBtn">Показать</button>
+                            </form>
                         </div>
                     </div>
                     <form class="row g-2 mb-3" method="get">
@@ -39,18 +52,10 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select name="property_type_id" class="form-select">
-                                <option value="">Тип имущества</option>
-                                <?php foreach ($propertyTypes as $pt): ?>
-                                    <option value="<?= $pt['id'] ?>" <?= ($filters['property_type_id'] == $pt['id']) ? 'selected' : '' ?>><?= htmlspecialchars($pt['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="warehouse_type_id" class="form-select">
-                                <option value="">Тип склада</option>
-                                <?php foreach ($warehouseTypes as $wt): ?>
-                                    <option value="<?= $wt['id'] ?>" <?= ($filters['warehouse_type_id'] == $wt['id']) ? 'selected' : '' ?>><?= htmlspecialchars($wt['name']) ?></option>
+                            <select name="category_id" class="form-select">
+                                <option value="">Категория имущества</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>" <?= ($filters['category_id'] == $cat['id']) ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -84,7 +89,7 @@
                                     <th>Дата</th>
                                     <th>Тип операции</th>
                                     <th>Имущество</th>
-                                    <th>Тип имущества</th>
+                                    <th>Категория имущества</th>
                                     <th>Поставщик</th>
                                     <th>Получатель</th>
                                     <th>Количество</th>
@@ -108,14 +113,7 @@
                                             </td>
                                             <td><?= htmlspecialchars($op['operation_type_name'] ?? $op['sign_of_calculation'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['item_name'] ?? $op['property_name'] ?? '-') ?></td>
-                                            <td>
-                                                <?= htmlspecialchars($op['property_type_name'] ?? '-') ?>
-                                                <?php if (isset($op['volume']) && $op['volume'] > 0): ?>
-                                                    <span class="badge bg-info ms-1">Наливной</span>
-                                                <?php else: ?>
-                                                    <span class="badge bg-secondary ms-1">Штучный</span>
-                                                <?php endif; ?>
-                                            </td>
+                                            <td><?= htmlspecialchars($op['category_name'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['supplier_name'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['buyer_name'] ?? '-') ?></td>
                                             <td>
@@ -169,4 +167,14 @@ $(document).ready(function() {
         ]
     });
 });
+
+document.getElementById('showWarehouseTypeBtn').onclick = function() {
+    var select = document.getElementById('warehouseTypeSelect');
+    var val = select.value;
+    if (val) {
+        window.location.href = '/warehouses/operations?warehouse_type_id=' + encodeURIComponent(val);
+    } else {
+        window.location.href = '/warehouses/operations';
+    }
+};
 </script> 
