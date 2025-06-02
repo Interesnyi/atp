@@ -60,37 +60,36 @@ class Router {
         $url = parse_url($url, PHP_URL_PATH);
         
         // Отладка
-        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - URL: {$url}, Method: {$method}" . PHP_EOL, FILE_APPEND);
+        // Закомментированы все file_put_contents для debug.log
         
         if ($this->match($url, $method)) {
             $controller = "\\App\\Controllers\\" . $this->params['controller'];
             
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Найден маршрут. Контроллер: {$controller}" . PHP_EOL, FILE_APPEND);
+            // Закомментированы все file_put_contents для debug.log
             
             if (class_exists($controller)) {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Класс контроллера существует" . PHP_EOL, FILE_APPEND);
+                // Закомментированы все file_put_contents для debug.log
                 
                 try {
                     $controllerObject = new $controller();
                     $action = $this->params['action'];
                     
-                    file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Действие: {$action}" . PHP_EOL, FILE_APPEND);
+                    // Закомментированы все file_put_contents для debug.log
                     
                     if (method_exists($controllerObject, $action)) {
-                        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Метод существует, вызываем" . PHP_EOL, FILE_APPEND);
+                        // Закомментированы все file_put_contents для debug.log
                         
                         unset($this->params['controller'], $this->params['action']);
-                        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Параметры: " . json_encode($this->params) . PHP_EOL, FILE_APPEND);
+                        // Закомментированы все file_put_contents для debug.log
                         
                         call_user_func_array([$controllerObject, $action], array_values($this->params));
-                        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Действие выполнено" . PHP_EOL, FILE_APPEND);
+                        // Закомментированы все file_put_contents для debug.log
                         return;
                     } else {
-                        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - ОШИБКА: Метод {$action} не существует в контроллере" . PHP_EOL, FILE_APPEND);
+                        // Закомментированы все file_put_contents для debug.log
                     }
                 } catch (\Exception $e) {
-                    file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - ОШИБКА: " . $e->getMessage() . PHP_EOL, FILE_APPEND);
-                    file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Трассировка: " . $e->getTraceAsString() . PHP_EOL, FILE_APPEND);
+                    // Закомментированы все file_put_contents для debug.log
                     
                     // Вывести ошибку на экран
                     echo '<div style="background-color: #ffeeee; border: 1px solid #ff0000; padding: 10px; margin: 10px;">';
@@ -101,14 +100,14 @@ class Router {
                     return;
                 }
             } else {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - ОШИБКА: Класс контроллера {$controller} не существует" . PHP_EOL, FILE_APPEND);
+                // Закомментированы все file_put_contents для debug.log
             }
         } else {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Маршрут не найден для URL: {$url}" . PHP_EOL, FILE_APPEND);
+            // Закомментированы все file_put_contents для debug.log
         }
         
         if ($this->notFoundCallback) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - Вызываем обработчик 404" . PHP_EOL, FILE_APPEND);
+            // Закомментированы все file_put_contents для debug.log
             
             try {
                 $controller = "\\App\\Controllers\\" . $this->notFoundCallback['controller'];
@@ -116,7 +115,7 @@ class Router {
                 $action = $this->notFoundCallback['action'];
                 call_user_func([$controllerObject, $action]);
             } catch (\Exception $e) {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Router::dispatch - ОШИБКА в обработчике 404: " . $e->getMessage() . PHP_EOL, FILE_APPEND);
+                // Закомментированы все file_put_contents для debug.log
                 
                 // Вывести ошибку на экран
                 echo '<div style="background-color: #ffeeee; border: 1px solid #ff0000; padding: 10px; margin: 10px;">';

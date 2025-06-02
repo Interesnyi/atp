@@ -17,15 +17,15 @@ class Database {
 
     private function connect() {
         try {
-            // Выводим информацию о конфигурации при отладке
-            if ($this->config['app']['debug']) {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection config:" . PHP_EOL, FILE_APPEND);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Host: " . $this->config['db']['host'] . PHP_EOL, FILE_APPEND);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database: " . $this->config['db']['database'] . PHP_EOL, FILE_APPEND);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "User: " . $this->config['db']['user'] . PHP_EOL, FILE_APPEND);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Charset: " . $this->config['db']['charset'] . PHP_EOL, FILE_APPEND);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Collation: " . $this->config['db']['collation'] . PHP_EOL, FILE_APPEND);
-            }
+            // Закомментированы все file_put_contents для debug.log
+            // if ($this->config['app']['debug']) {
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection config:" . PHP_EOL, FILE_APPEND);
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Host: " . $this->config['db']['host'] . PHP_EOL, FILE_APPEND);
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database: " . $this->config['db']['database'] . PHP_EOL, FILE_APPEND);
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "User: " . $this->config['db']['user'] . PHP_EOL, FILE_APPEND);
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Charset: " . $this->config['db']['charset'] . PHP_EOL, FILE_APPEND);
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Collation: " . $this->config['db']['collation'] . PHP_EOL, FILE_APPEND);
+            // }
 
             $dsn = "mysql:host={$this->config['db']['host']};dbname={$this->config['db']['database']}";
             $options = [
@@ -57,12 +57,14 @@ class Database {
             // Проверяем соединение
             $this->connection->query('SELECT 1');
             
-            if ($this->config['app']['debug']) {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection successful" . PHP_EOL, FILE_APPEND);
-            }
+            // Закомментированы все file_put_contents для debug.log
+            // if ($this->config['app']['debug']) {
+            //     file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Database connection successful" . PHP_EOL, FILE_APPEND);
+            // }
         } catch (PDOException $e) {
             $error = "Database connection failed: " . $e->getMessage();
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . $error . PHP_EOL, FILE_APPEND);
+            // Закомментированы все file_put_contents для debug.log
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . $error . PHP_EOL, FILE_APPEND);
             throw new PDOException($error, (int)$e->getCode());
         }
     }

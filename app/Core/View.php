@@ -20,7 +20,7 @@ class View {
     public function render($view, $data = []) {
         try {
             // Записываем отладочную информацию в файл
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Начало рендера вида: {$view}" . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Начало рендера вида: {$view}" . PHP_EOL, FILE_APPEND);
             
             // Устанавливаем правильную кодировку UTF-8
             EncodingHelper::setUtf8Headers();
@@ -32,17 +32,17 @@ class View {
             $data = $this->fixArrayEncoding($data);
             
             // Выводим данные для отладки
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Данные: " . json_encode(array_keys($data), JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Данные: " . json_encode(array_keys($data), JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
             
             // Рендерим представление
             $viewContent = $this->renderView($view, $data);
             
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Вид отрендерен, длина контента: " . strlen($viewContent) . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Вид отрендерен, длина контента: " . strlen($viewContent) . PHP_EOL, FILE_APPEND);
             
             if ($this->layout) {
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Начало рендера макета: {$this->layout}" . PHP_EOL, FILE_APPEND);
+                // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Начало рендера макета: {$this->layout}" . PHP_EOL, FILE_APPEND);
                 $result = $this->renderLayout($viewContent, $data);
-                file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Макет отрендерен, длина контента: " . strlen($result) . PHP_EOL, FILE_APPEND);
+                // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::render - Макет отрендерен, длина контента: " . strlen($result) . PHP_EOL, FILE_APPEND);
                 
                 // Выведем содержимое напрямую, чтобы оно отображалось на странице
                 echo $result;
@@ -53,8 +53,8 @@ class View {
             echo $viewContent;
             return true;
         } catch (\Exception $e) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА в View::render - " . $e->getMessage() . PHP_EOL, FILE_APPEND);
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Трассировка: " . $e->getTraceAsString() . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА в View::render - " . $e->getMessage() . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "Трассировка: " . $e->getTraceAsString() . PHP_EOL, FILE_APPEND);
             
             // Выведем ошибку на экран для отладки
             echo '<div style="background-color: #ffeeee; border: 1px solid #ff0000; padding: 10px; margin: 10px;">';
@@ -70,22 +70,22 @@ class View {
         $viewFile = __DIR__ . "/../Views/{$view}.php";
         
         if (!file_exists($viewFile)) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА: Файл вида не найден: {$viewFile}" . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА: Файл вида не найден: {$viewFile}" . PHP_EOL, FILE_APPEND);
             throw new \Exception("View {$view} not found");
         }
 
-        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderView - Файл вида существует: {$viewFile}" . PHP_EOL, FILE_APPEND);
+        // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderView - Файл вида существует: {$viewFile}" . PHP_EOL, FILE_APPEND);
         
         extract($data);
         
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
-        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderView - Вид отрендерен, длина: " . strlen($content) . PHP_EOL, FILE_APPEND);
+        // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderView - Вид отрендерен, длина: " . strlen($content) . PHP_EOL, FILE_APPEND);
         
         // Проверка на пустой контент
         if (empty($content)) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ВНИМАНИЕ: Пустой контент при рендеринге {$view}" . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ВНИМАНИЕ: Пустой контент при рендеринге {$view}" . PHP_EOL, FILE_APPEND);
         }
         
         return $content;
@@ -96,22 +96,22 @@ class View {
         $layoutFile = __DIR__ . "/../Views/layouts/{$this->layout}.php";
         
         if (!file_exists($layoutFile)) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА: Файл макета не найден: {$layoutFile}" . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ОШИБКА: Файл макета не найден: {$layoutFile}" . PHP_EOL, FILE_APPEND);
             throw new \Exception("Layout {$this->layout} not found");
         }
 
-        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderLayout - Файл макета существует: {$layoutFile}" . PHP_EOL, FILE_APPEND);
+        // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderLayout - Файл макета существует: {$layoutFile}" . PHP_EOL, FILE_APPEND);
 
         extract($data);
         
         ob_start();
         require $layoutFile;
         $result = ob_get_clean();
-        file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderLayout - Макет отрендерен, длина: " . strlen($result) . PHP_EOL, FILE_APPEND);
+        // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "View::renderLayout - Макет отрендерен, длина: " . strlen($result) . PHP_EOL, FILE_APPEND);
         
         // Проверка на пустой контент
         if (empty($result)) {
-            file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ВНИМАНИЕ: Пустой результат после рендеринга макета {$this->layout}" . PHP_EOL, FILE_APPEND);
+            // file_put_contents(__DIR__ . '/../../logs/debug.log', date('[Y-m-d H:i:s] ') . "ВНИМАНИЕ: Пустой результат после рендеринга макета {$this->layout}" . PHP_EOL, FILE_APPEND);
         }
         
         return $result;
