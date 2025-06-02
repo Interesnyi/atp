@@ -49,9 +49,12 @@ $statusDict = [
                             <td><?= $task['due_date'] ? htmlspecialchars(date('d.m.Y', strtotime($task['due_date']))) : '-' ?></td>
                             <td><?= $statusDict[$task['status']] ?? htmlspecialchars($task['status']) ?></td>
                             <td>
-                                <a href="/tasks/edit/<?= $task['id'] ?>" class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                                <a href="/tasks/show/<?= $task['id'] ?>" class="btn btn-outline-primary btn-sm me-1" title="Этапы/заметки">
+                                    <i class="bi bi-journal-text"></i>
+                                </a>
+                                <a href="/tasks/edit/<?= $task['id'] ?>" class="btn btn-outline-secondary btn-sm">Редактировать</a>
                                 <form method="post" action="/tasks/delete/<?= $task['id'] ?>" style="display:inline-block" onsubmit="return confirm('Удалить дело?');">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm ms-1">Удалить</button>
                                 </form>
                             </td>
                         </tr>

@@ -20,13 +20,14 @@ class Inventory extends Model {
                     it.has_volume,
                     it.unit,
                     c.name as category_name,
+                    c.warehouse_type_id,
                     w.name as warehouse_name,
                     wt.name as warehouse_type_name
                 FROM {$this->table} i
                 JOIN items it ON i.item_id = it.id
-                JOIN warehouses w ON i.warehouse_id = w.id
-                JOIN warehouse_types wt ON w.type_id = wt.id
                 JOIN items_categories c ON it.category_id = c.id
+                JOIN warehouses w ON i.warehouse_id = w.id
+                JOIN warehouse_types wt ON c.warehouse_type_id = wt.id
                 WHERE it.is_deleted = 0 AND w.is_deleted = 0";
         
         $params = [];
@@ -43,7 +44,7 @@ class Inventory extends Model {
         }
         
         if (!empty($filters['warehouse_type_id'])) {
-            $sql .= " AND w.type_id = ?";
+            $sql .= " AND c.warehouse_type_id = ?";
             $params[] = $filters['warehouse_type_id'];
         }
         

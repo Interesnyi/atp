@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WarehousesController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\OrdersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,5 +35,14 @@ Route::post('/warehouses/items/store', 'WarehousesController@storeItem');
 Route::get('/warehouses/items/edit/{id}', 'WarehousesController@editItem');
 Route::post('/warehouses/items/update/{id}', 'WarehousesController@updateItem');
 Route::post('/warehouses/items/delete/{id}', 'WarehousesController@deleteItem');
+
+// Заказ-наряды (ремонт автомобилей)
+Route::get('orders', 'OrdersController@index');
+Route::get('orders/create', 'OrdersController@create');
+Route::post('orders/store', 'OrdersController@store');
+Route::get('orders/view/{id}', 'OrdersController@view');
+Route::get('orders/edit/{id}', 'OrdersController@edit');
+Route::post('orders/update/{id}', 'OrdersController@update');
+Route::post('orders/delete/{id}', 'OrdersController@delete');
 
 require __DIR__.'/auth.php';

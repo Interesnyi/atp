@@ -13,7 +13,7 @@ class Customer extends Model {
      * @return array
      */
     public function getAllCustomers() {
-        $sql = "SELECT * FROM {$this->table} WHERE is_deleted = 0 ORDER BY name";
+        $sql = "SELECT * FROM {$this->table} WHERE is_deleted = 0 ORDER BY company_name, contact_person";
         return $this->db->fetchAll($sql);
     }
     
@@ -35,19 +35,15 @@ class Customer extends Model {
      * @return int ID созданного покупателя
      */
     public function createCustomer($data) {
-        $sql = "INSERT INTO {$this->table} 
-                (name, contact_person, phone, email, address, description, is_internal, is_deleted) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+        $sql = "INSERT INTO {$this->table} (company_name, contact_person, is_individual, phone, email, description, is_deleted) VALUES (?, ?, ?, ?, ?, ?, 0)";
         $this->db->execute($sql, [
-            $data['name'],
-            $data['contact_person'] ?? null,
-            $data['phone'] ?? null,
-            $data['email'] ?? null,
-            $data['address'] ?? null,
-            $data['description'] ?? null,
-            !empty($data['is_internal']) ? 1 : 0
+            $data['company_name'] ?? '',
+            $data['contact_person'] ?? '',
+            !empty($data['is_individual']) ? 1 : 0,
+            $data['phone'] ?? '',
+            $data['email'] ?? '',
+            $data['description'] ?? ''
         ]);
-        
         return $this->db->lastInsertId();
     }
     
@@ -59,18 +55,14 @@ class Customer extends Model {
      * @return bool
      */
     public function updateCustomer($id, $data) {
-        $sql = "UPDATE {$this->table} 
-                SET name = ?, contact_person = ?, phone = ?, 
-                    email = ?, address = ?, description = ?, is_internal = ?
-                WHERE id = ?";
+        $sql = "UPDATE {$this->table} SET company_name=?, contact_person=?, is_individual=?, phone=?, email=?, description=? WHERE id=?";
         return $this->db->execute($sql, [
-            $data['name'],
-            $data['contact_person'] ?? null,
-            $data['phone'] ?? null,
-            $data['email'] ?? null,
-            $data['address'] ?? null,
-            $data['description'] ?? null,
-            !empty($data['is_internal']) ? 1 : 0,
+            $data['company_name'] ?? '',
+            $data['contact_person'] ?? '',
+            !empty($data['is_individual']) ? 1 : 0,
+            $data['phone'] ?? '',
+            $data['email'] ?? '',
+            $data['description'] ?? '',
             $id
         ]) > 0;
     }

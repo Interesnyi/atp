@@ -143,6 +143,7 @@ class Operation extends Model {
             );
             
             $this->db->commit();
+            $this->logInventory('Операция создана', ['operation_id' => $operationId]);
             return $operationId;
             
         } catch (\Exception $e) {
@@ -213,6 +214,7 @@ class Operation extends Model {
             );
             
             $this->db->commit();
+            $this->logInventory('Операция обновлена', ['operation_id' => $id]);
             return true;
             
         } catch (\Exception $e) {
@@ -253,6 +255,7 @@ class Operation extends Model {
             $this->db->execute($sql, [$id]);
             
             $this->db->commit();
+            $this->logInventory('Операция удалена', ['operation_id' => $id]);
             return true;
             
         } catch (\Exception $e) {
@@ -342,6 +345,7 @@ class Operation extends Model {
         } else {
             $this->createInventoryItem($itemId, $warehouseId, $newQuantity, $newVolume);
         }
+        $this->logInventory('Инвентарный остаток обновлен', ['item_id' => $itemId, 'warehouse_id' => $warehouseId, 'quantity' => $newQuantity, 'volume' => $newVolume]);
     }
     
     /**
@@ -377,6 +381,7 @@ class Operation extends Model {
                 // Для других типов операций нужна специфичная логика
                 break;
         }
+        $this->logInventory('Влияние операции отменено', ['item_id' => $itemId, 'warehouse_id' => $warehouseId, 'operation_type_id' => $operationTypeId, 'quantity' => $quantity, 'volume' => $volume]);
     }
     
     /**
@@ -464,5 +469,67 @@ class Operation extends Model {
                 LIMIT ?";
         
         return $this->db->fetchAll($sql, [$warehouseId, $limit]);
+    }
+
+    protected function logInventory($message, $context = []) {
+        $log = date('[Y-m-d H:i:s] ') . $message;
+        if (!empty($context)) {
+            $log .= ' | ' . json_encode($context, JSON_UNESCAPED_UNICODE);
+        }
+        // Определяем путь до папки logs относительно корня проекта
+        $logDir = realpath(__DIR__ . '/../../../logs');
+        if ($logDir === false) {
+            // Если папка не найдена, пробуем создать относительно DOCUMENT_ROOT
+            $logDir = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] . '/logs' : __DIR__ . '/../../../logs';
+            if (!is_dir($logDir)) {
+                mkdir($logDir, 0777, true);
+            }
+        }
+        $logFile = $logDir . '/inventory.log';
+        file_put_contents($logFile, $log . PHP_EOL, FILE_APPEND);
+    }
+
+    public function recalcInventoryForItemWarehouse($itemId, $warehouseId) {
+        $sql = "SELECT operation_type_id, quantity, volume FROM {$this->table} WHERE item_id = ? AND warehouse_id = ? AND is_deleted = 0 ORDER BY operation_date, id";
+        $rows = $this->db->fetchAll($sql, [$itemId, $warehouseId]);
+        $itemModel = new \App\Models\Item();
+        $item = $itemModel->getItemById($itemId);
+        $hasVolume = !empty($item['has_volume']);
+        $quantity = 0;
+        $volume = 0;
+        foreach ($rows as $row) {
+            switch ($row['operation_type_id']) {
+                case self::TYPE_RECEPTION:
+                    if ($hasVolume) {
+                        $volume += $row['volume'] ?? 0;
+                    } else {
+                        $quantity += $row['quantity'];
+                    }
+                    break;
+                case self::TYPE_ISSUE:
+                case self::TYPE_WRITEOFF:
+                    if ($hasVolume) {
+                        $volume -= $row['volume'] ?? 0;
+                    } else {
+                        $quantity -= $row['quantity'];
+                    }
+                    break;
+                case self::TYPE_INVENTORY:
+                    if ($hasVolume) {
+                        $volume = $row['volume'] ?? 0;
+                    } else {
+                        $quantity = $row['quantity'];
+                    }
+                    break;
+            }
+        }
+        // Обновляем или создаём запись в inventory
+        $inventory = $this->getInventoryItem($itemId, $warehouseId);
+        if ($inventory) {
+            $this->updateInventoryItem($itemId, $warehouseId, $quantity, $hasVolume ? $volume : null);
+        } else if ($quantity != 0 || $volume != 0) {
+            $this->createInventoryItem($itemId, $warehouseId, $quantity, $hasVolume ? $volume : null);
+        }
+        $this->logInventory('Пересчёт остатков', ['item_id' => $itemId, 'warehouse_id' => $warehouseId, 'quantity' => $quantity, 'volume' => $volume]);
     }
 } 

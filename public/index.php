@@ -58,9 +58,13 @@ $router->get('warehouses/suppliers', 'WarehousesController', 'suppliers');
 $router->get('warehouses/customers', 'WarehousesController', 'customers');
 $router->get('warehouses/operations', 'OperationsController', 'index');
 $router->get('warehouses/operations/create', 'OperationsController', 'create');
+$router->get('warehouses/operations/edit/{id}', 'OperationsController', 'edit');
+$router->post('warehouses/operations/update/{id}', 'OperationsController', 'update');
 $router->get('warehouses/reports', 'WarehousesController', 'reports');
 $router->get('warehouses/statistics', 'WarehousesController', 'statistics');
 $router->get('warehouses/inventory', 'WarehousesController', 'inventory');
+$router->get('warehouses/inventory/search', 'WarehousesController', 'searchInventory');
+$router->get('warehouses/inventory/log', 'WarehousesController', 'inventoryLog');
 
 // Маршруты для управления складами
 $router->post('warehouses/create-warehouse', 'WarehousesController', 'createWarehouse');
@@ -92,6 +96,7 @@ $router->get('warehouses/items/edit/{id}', 'WarehousesController', 'editItem');
 $router->post('warehouses/items/update/{id}', 'WarehousesController', 'updateItem');
 $router->post('warehouses/items/delete/{id}', 'WarehousesController', 'deleteItem');
 $router->get('warehouses/items/search', 'WarehousesController', 'searchItems');
+$router->get('warehouses/items/history/{id}', 'WarehousesController', 'itemHistory');
 $router->get('warehouses/items/categories', 'WarehousesController', 'itemCategories');
 $router->get('warehouses/items/categories/create', 'WarehousesController', 'createItemCategory');
 $router->post('warehouses/items/categories/store', 'WarehousesController', 'storeItemCategory');
@@ -153,12 +158,66 @@ $router->get('tasks/edit/{id}', 'TasksController', 'edit');
 $router->post('tasks/update/{id}', 'TasksController', 'update');
 $router->post('tasks/delete/{id}', 'TasksController', 'delete');
 $router->post('tasks/notify', 'TasksController', 'notify');
+$router->get('tasks/show/{id}', 'TasksController', 'show');
+$router->post('tasks/add-note/{id}', 'TasksController', 'addNote');
+
+// Заказ-наряды (ремонт автомобилей)
+$router->get('orders', 'OrdersController', 'index');
+$router->get('orders/create', 'OrdersController', 'create');
+$router->post('orders/store', 'OrdersController', 'store');
+$router->get('orders/show/{id}', 'OrdersController', 'show');
+$router->get('orders/edit/{id}', 'OrdersController', 'edit');
+$router->post('orders/update/{id}', 'OrdersController', 'update');
+$router->post('orders/delete/{id}', 'OrdersController', 'delete');
+$router->get('orders/view/{id}', 'OrdersController', 'show');
+
+// --- Справочники заказ-нарядов ---
+$router->get('orders/customers', 'OrdersCustomersController', 'index');
+$router->get('orders/customers/create', 'OrdersCustomersController', 'create');
+$router->post('orders/customers/store', 'OrdersCustomersController', 'store');
+$router->get('orders/customers/show/{id}', 'OrdersCustomersController', 'show');
+$router->get('orders/customers/edit/{id}', 'OrdersCustomersController', 'edit');
+$router->post('orders/customers/update/{id}', 'OrdersCustomersController', 'update');
+$router->post('orders/customers/delete/{id}', 'OrdersCustomersController', 'delete');
+
+$router->get('orders/cars', 'OrdersCarsController', 'index');
+$router->get('orders/cars/create', 'OrdersCarsController', 'create');
+$router->post('orders/cars/store', 'OrdersCarsController', 'store');
+$router->get('orders/cars/show/{id}', 'OrdersCarsController', 'show');
+$router->get('orders/cars/edit/{id}', 'OrdersCarsController', 'edit');
+$router->post('orders/cars/update/{id}', 'OrdersCarsController', 'update');
+$router->post('orders/cars/delete/{id}', 'OrdersCarsController', 'delete');
+
+$router->get('orders/work_types', 'OrdersWorkTypesController', 'index');
+$router->get('orders/work_types/create', 'OrdersWorkTypesController', 'create');
+$router->post('orders/work_types/store', 'OrdersWorkTypesController', 'store');
+$router->get('orders/work_types/show/{id}', 'OrdersWorkTypesController', 'show');
+$router->get('orders/work_types/edit/{id}', 'OrdersWorkTypesController', 'edit');
+$router->post('orders/work_types/update/{id}', 'OrdersWorkTypesController', 'update');
+$router->post('orders/work_types/delete/{id}', 'OrdersWorkTypesController', 'delete');
+
+$router->get('orders/work_categories', 'OrdersWorkCategoriesController', 'index');
+$router->get('orders/work_categories/create', 'OrdersWorkCategoriesController', 'create');
+$router->post('orders/work_categories/store', 'OrdersWorkCategoriesController', 'store');
+$router->get('orders/work_categories/show/{id}', 'OrdersWorkCategoriesController', 'show');
+$router->get('orders/work_categories/edit/{id}', 'OrdersWorkCategoriesController', 'edit');
+$router->post('orders/work_categories/update/{id}', 'OrdersWorkCategoriesController', 'update');
+$router->post('orders/work_categories/delete/{id}', 'OrdersWorkCategoriesController', 'delete');
+
+$router->get('orders/api/cars_by_customer/{customerId}', 'OrdersCarsController', 'getCarsByCustomer');
 
 // Обработчик 404 ошибки
 $router->setNotFoundHandler('ErrorController', 'notFound');
 
 // Перед запуском роутера
 debug_log('Запуск роутера с URI: ' . $_SERVER['REQUEST_URI']);
+
+$router->post('warehouses/inventory/recalc', 'WarehousesController', 'recalcInventory');
+
+if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
+    header('Location: /dashboard');
+    exit;
+}
 
 // Запускаем роутер
 $router->dispatch(); 

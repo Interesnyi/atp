@@ -163,6 +163,15 @@
                     </li>
                     <?php endif; ?>
                     
+                    <?php // Раздел "Заказ-наряды" (ремонт автомобилей) ?>
+                    <?php if ($role === 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders">
+                            <i class="bi bi-clipboard-check"></i> Заказ-наряды
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
                     <?php // Раздел "Дела" ?>
                     <?php if ($role === 'admin' || $role === 'manager' || isset($userPermissions['tasks.view'])): ?>
                     <li class="nav-item">

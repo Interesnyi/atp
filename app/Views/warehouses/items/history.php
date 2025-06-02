@@ -53,7 +53,7 @@
                                     <td><?= htmlspecialchars($inv['warehouse_name'] ?? ($warehousesById[$inv['warehouse_id']]['name'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars($inv['warehouse_type_name'] ?? ($warehousesById[$inv['warehouse_id']]['warehouse_type_name'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars($inv['quantity']) ?></td>
-                                    <td><?= htmlspecialchars($inv['last_update'] ?? '-') ?></td>
+                                    <td><?= !empty($inv['last_update']) ? date('d.m.Y H:i', strtotime($inv['last_update'])) : '-' ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -85,7 +85,7 @@
                     <?php else: ?>
                         <?php foreach ($operations as $op): ?>
                             <tr>
-                                <td><?= htmlspecialchars($op['operation_date'] ?? '-') ?></td>
+                                <td><?= !empty($op['operation_date']) ? date('d.m.Y H:i', strtotime($op['operation_date'])) : '-' ?></td>
                                 <td><?= htmlspecialchars($op['warehouse_name'] ?? ($warehousesById[$op['warehouse_id']]['name'] ?? '')) ?></td>
                                 <td><?= htmlspecialchars($op['operation_type_name'] ?? $op['operation_type_id']) ?></td>
                                 <td><?= htmlspecialchars($op['quantity']) ?></td>

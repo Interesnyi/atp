@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-center align-items-center min-vh-80">
+  <div class="card shadow-sm w-100" style="max-width:900px;">
+    <div class="card-body">
+        <h2>Заказ-наряд №<?= htmlspecialchars($order['order_number']) ?></h2>
+        <div class="mb-3">
+            <b>Дата приёма:</b> <?= htmlspecialchars($order['date_created']) ?>
+            <b>Статус:</b> <?= htmlspecialchars($order['status']) ?>
+            <b>Менеджер:</b> <?= htmlspecialchars($order['manager']) ?>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h5>Заказчик</h5>
+                <div><?= htmlspecialchars($order['customer_name']) ?></div>
+            </div>
+            <div class="col-md-6">
+                <h5>Автомобиль</h5>
+                <div><?= htmlspecialchars($order['brand']) ?> <?= htmlspecialchars($order['model']) ?> (<?= htmlspecialchars($order['license_plate']) ?>)</div>
+            </div>
+        </div>
+        <h5>Работы</h5>
+        <table class="table table-bordered table-sm">
+            <thead><tr><th>Наименование</th><th>Кол-во</th><th>Цена</th><th>Сумма</th><th>Исполнитель</th></tr></thead>
+            <tbody>
+            <?php foreach ($works as $w): ?>
+                <tr>
+                    <td><?= htmlspecialchars($w['name']) ?></td>
+                    <td><?= htmlspecialchars($w['quantity']) ?></td>
+                    <td><?= htmlspecialchars($w['price']) ?></td>
+                    <td><?= htmlspecialchars($w['total']) ?></td>
+                    <td><?= htmlspecialchars($w['executor']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <h5>Материалы исполнителя</h5>
+        <table class="table table-bordered table-sm">
+            <thead><tr><th>Наименование</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead>
+            <tbody>
+            <?php foreach ($materials as $m): ?>
+                <tr>
+                    <td><?= htmlspecialchars($m['name']) ?></td>
+                    <td><?= htmlspecialchars($m['quantity']) ?></td>
+                    <td><?= htmlspecialchars($m['price']) ?></td>
+                    <td><?= htmlspecialchars($m['total']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <h5>Материалы заказчика</h5>
+        <table class="table table-bordered table-sm">
+            <thead><tr><th>Наименование</th><th>Кол-во</th></tr></thead>
+            <tbody>
+            <?php foreach ($customerMaterials as $cm): ?>
+                <tr>
+                    <td><?= htmlspecialchars($cm['name']) ?></td>
+                    <td><?= htmlspecialchars($cm['quantity']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <h5>Файлы</h5>
+        <ul>
+            <?php foreach ($files as $f): ?>
+                <li><a href="<?= htmlspecialchars($f['file_path']) ?>" target="_blank"><?= htmlspecialchars($f['file_name']) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+        <a href="/orders" class="btn btn-secondary mt-3">Назад к списку</a>
+        <a href="/orders/edit/<?= $order['id'] ?>" class="btn btn-primary mt-3">Редактировать</a>
+    </div>
+  </div>
+</div> 

@@ -72,4 +72,70 @@ class OperationsController extends Controller {
             'title' => 'Добавить операцию'
         ]);
     }
+
+    public function edit($id) {
+        $operationModel = new Operation();
+        $suppliers = (new Supplier())->getAllSuppliers();
+        $buyers = (new Buyer())->getAllBuyers();
+        $warehouses = (new \App\Models\Warehouse())->getAllWarehouses();
+        $items = (new \App\Models\Item())->getAllItems();
+        $operationTypes = [
+            ['id' => Operation::TYPE_RECEPTION, 'name' => 'Приемка'],
+            ['id' => Operation::TYPE_ISSUE, 'name' => 'Выдача'],
+            ['id' => Operation::TYPE_WRITEOFF, 'name' => 'Списание'],
+            ['id' => Operation::TYPE_TRANSFER, 'name' => 'Перемещение'],
+            ['id' => Operation::TYPE_BOTTLING, 'name' => 'Розлив'],
+            ['id' => Operation::TYPE_INVENTORY, 'name' => 'Инвентаризация'],
+        ];
+        $operation = $operationModel->getOperationById($id);
+        if (!$operation) {
+            $this->view->render('error/404', ['title' => 'Операция не найдена']);
+            return;
+        }
+        $this->view->render('warehouses/operations/edit', [
+            'operation' => $operation,
+            'suppliers' => $suppliers,
+            'buyers' => $buyers,
+            'warehouses' => $warehouses,
+            'items' => $items,
+            'operationTypes' => $operationTypes,
+            'title' => 'Редактировать операцию'
+        ]);
+    }
+
+    /**
+     * Сохранение изменений операции
+     */
+    public function update($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $_POST;
+            // Приведение типов и обработка пустых значений
+            $data['quantity'] = isset($data['quantity']) ? (int)$data['quantity'] : null;
+            $data['volume'] = isset($data['volume']) ? (float)$data['volume'] : null;
+            $data['operation_date'] = isset($data['operation_date']) ? $data['operation_date'] : date('Y-m-d H:i:s');
+            $data['supplier_id'] = !empty($data['supplier_id']) ? (int)$data['supplier_id'] : null;
+            $data['buyer_id'] = !empty($data['buyer_id']) ? (int)$data['buyer_id'] : null;
+            $data['warehouse_id'] = !empty($data['warehouse_id']) ? (int)$data['warehouse_id'] : null;
+            $data['warehouse_id_to'] = !empty($data['warehouse_id_to']) ? (int)$data['warehouse_id_to'] : null;
+            $data['description'] = $data['description'] ?? '';
+            $data['item_id'] = (int)($data['item_id'] ?? 0);
+            $data['operation_type_id'] = (int)($data['operation_type_id'] ?? 0);
+
+            $operationModel = new Operation();
+            $result = $operationModel->updateOperation($id, $data);
+            if ($result) {
+                $_SESSION['success'] = 'Операция успешно обновлена';
+                header('Location: /warehouses/operations');
+                exit;
+            } else {
+                $_SESSION['error'] = 'Ошибка при обновлении операции';
+                header('Location: /warehouses/operations/edit/' . $id);
+                exit;
+            }
+        } else {
+            $_SESSION['error'] = 'Некорректный метод запроса';
+            header('Location: /warehouses/operations');
+            exit;
+        }
+    }
 } 

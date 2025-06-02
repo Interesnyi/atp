@@ -56,4 +56,26 @@ class Task extends Model {
         $sql = "UPDATE {$this->table} SET notified_at = NOW() WHERE id = ?";
         return $this->db->execute($sql, [$id]);
     }
+
+    public function getNotesByTaskId($taskId) {
+        $sql = "SELECT * FROM tasks_notes WHERE task_id = ? ORDER BY created_at ASC";
+        return $this->db->fetchAll($sql, [$taskId]);
+    }
+
+    public function addNote($taskId, $note) {
+        $sql = "INSERT INTO tasks_notes (task_id, note, created_at) VALUES (?, ?, NOW())";
+        $this->db->execute($sql, [$taskId, $note]);
+        return $this->db->lastInsertId();
+    }
+
+    public function getFilesByNoteId($noteId) {
+        $sql = "SELECT * FROM tasks_notes_files WHERE note_id = ? ORDER BY uploaded_at ASC";
+        return $this->db->fetchAll($sql, [$noteId]);
+    }
+
+    public function addNoteFile($noteId, $fileName, $filePath) {
+        $sql = "INSERT INTO tasks_notes_files (note_id, file_name, file_path, uploaded_at) VALUES (?, ?, ?, NOW())";
+        $this->db->execute($sql, [$noteId, $fileName, $filePath]);
+        return $this->db->lastInsertId();
+    }
 } 

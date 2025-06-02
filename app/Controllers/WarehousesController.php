@@ -558,13 +558,19 @@ class WarehousesController extends Controller {
     }
 
     public function inventory() {
+        if (empty($_SESSION['permissions']) && !empty($_SESSION['role'])) {
+            $_SESSION['permissions'] = [$_SESSION['role']];
+        }
         $inventoryModel = new \App\Models\Inventory();
         $warehouseModel = new \App\Models\Warehouse();
         $categoryModel = new \App\Models\ItemCategory();
 
+        $warehouseTypeModel = new \App\Models\WarehouseType();
+        $warehouseTypes = $warehouseTypeModel->getAllTypes();
         $filters = [
             'warehouse_id' => isset($_GET['warehouse_id']) ? (int)$_GET['warehouse_id'] : null,
             'category_id' => isset($_GET['category_id']) ? (int)$_GET['category_id'] : null,
+            'warehouse_type_id' => isset($_GET['warehouse_type_id']) ? (int)$_GET['warehouse_type_id'] : null,
             'search' => isset($_GET['search']) ? trim($_GET['search']) : null,
             'has_volume' => isset($_GET['has_volume']) && $_GET['has_volume'] !== '' ? (int)$_GET['has_volume'] : null
         ];
@@ -577,9 +583,10 @@ class WarehousesController extends Controller {
             'items' => $items,
             'warehouses' => $warehouses,
             'categories' => $categories,
+            'warehouseTypes' => $warehouseTypes,
             'filters' => $filters,
             'title' => 'Остатки',
-            'userPermissions' => isset($_SESSION['permissions']) ? $_SESSION['userPermissions'] : []
+            'userPermissions' => isset($_SESSION['permissions']) ? $_SESSION['permissions'] : []
         ]);
     }
     
@@ -997,6 +1004,7 @@ class WarehousesController extends Controller {
         $filters = [
             'warehouse_id' => isset($_GET['warehouse_id']) ? (int)$_GET['warehouse_id'] : null,
             'category_id' => isset($_GET['category_id']) ? (int)$_GET['category_id'] : null,
+            'warehouse_type_id' => isset($_GET['warehouse_type_id']) ? (int)$_GET['warehouse_type_id'] : null,
             'search' => isset($_GET['search']) ? trim($_GET['search']) : null,
             'has_volume' => isset($_GET['has_volume']) && $_GET['has_volume'] !== '' ? (int)$_GET['has_volume'] : null
         ];
@@ -1021,6 +1029,50 @@ class WarehousesController extends Controller {
         $html = ob_get_clean();
         header('Content-Type: text/html; charset=utf-8');
         echo $html;
+        exit;
+    }
+
+    public function recalcInventory() {
+        $operationModel = new \App\Models\Operation();
+        $itemModel = new \App\Models\Item();
+        $warehouseModel = new \App\Models\Warehouse();
+        $items = $itemModel->getAllItems();
+        $warehouses = $warehouseModel->getAllWarehouses();
+        $count = 0;
+        $errors = 0;
+        foreach ($items as $item) {
+            foreach ($warehouses as $warehouse) {
+                try {
+                    $operationModel->recalcInventoryForItemWarehouse($item['id'], $warehouse['id']);
+                    $count++;
+                } catch (\Throwable $e) {
+                    $errors++;
+                }
+            }
+        }
+        file_put_contents(__DIR__ . '/../../../logs/inventory.log', date('[Y-m-d H:i:s] ') . "Массовый пересчёт остатков: {$count} записей, ошибок: {$errors}" . PHP_EOL, FILE_APPEND);
+        if ($errors > 0) {
+            $_SESSION['error'] = 'Остатки пересчитаны с ошибками (' . $count . ' записей, ошибок: ' . $errors . ')';
+        } else {
+            $_SESSION['success'] = 'Остатки успешно пересчитаны (' . $count . ' записей)';
+        }
+        $this->redirect('/warehouses/inventory');
+    }
+
+    public function inventoryLog() {
+        if (empty($_SESSION['permissions']) || (!in_array('admin', $_SESSION['permissions']) && !in_array('maslosklad.manage', $_SESSION['permissions']))) {
+            http_response_code(403);
+            echo 'Доступ запрещён';
+            exit;
+        }
+        $logFile = __DIR__ . '/../../../logs/inventory.log';
+        if (!file_exists($logFile)) {
+            echo 'Лог-файл не найден.';
+            exit;
+        }
+        $lines = file($logFile);
+        $lines = array_slice($lines, -500); // последние 500 строк
+        echo '<pre style="background:#222;color:#eee;padding:20px;max-height:80vh;overflow:auto;font-size:13px;">' . htmlspecialchars(implode('', $lines)) . '</pre>';
         exit;
     }
 } 
