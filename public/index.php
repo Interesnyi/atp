@@ -20,9 +20,9 @@ if (!is_dir(__DIR__ . '/../logs')) {
 }
 
 // Отладочная функция
-function debug_log($message) {
-    file_put_contents(__DIR__ . '/../logs/debug.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
-}
+// function debug_log($message) {
+//     file_put_contents(__DIR__ . '/../logs/debug.log', date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
+// }
 
 // Устанавливаем правильную кодировку UTF-8
 EncodingHelper::setUtf8Headers();
@@ -31,7 +31,7 @@ EncodingHelper::setUtf8Headers();
 session_start();
 
 // Логируем начало выполнения скрипта
-debug_log('Начало выполнения index.php');
+// debug_log('Начало выполнения index.php');
 
 // Создаем экземпляр роутера
 $router = new Router();
@@ -210,7 +210,7 @@ $router->get('orders/api/cars_by_customer/{customerId}', 'OrdersCarsController',
 $router->setNotFoundHandler('ErrorController', 'notFound');
 
 // Перед запуском роутера
-debug_log('Запуск роутера с URI: ' . $_SERVER['REQUEST_URI']);
+// debug_log('Запуск роутера с URI: ' . $_SERVER['REQUEST_URI']);
 
 $router->post('warehouses/inventory/recalc', 'WarehousesController', 'recalcInventory');
 
