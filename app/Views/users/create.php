@@ -38,6 +38,15 @@
                         </div>
                         
                         <div class="mb-3">
+                            <label for="jobTitle" class="form-label">Должность <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="<?= isset(
+                                $jobTitle) ? htmlspecialchars($jobTitle) : '' ?>" required>
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите должность.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
                             <label for="password" class="form-label">Пароль <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="password" class="form-control" id="password" name="password" required>

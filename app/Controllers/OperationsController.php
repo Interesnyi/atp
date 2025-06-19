@@ -17,24 +17,30 @@ class OperationsController extends Controller {
     public function index() {
         // Получаем фильтры из GET
         $filters = [
-            'supplier_id' => $this->getQuery('supplier_id'),
-            'buyer_id' => $this->getQuery('buyer_id'),
-            'property_type_id' => $this->getQuery('property_type_id'),
             'warehouse_type_id' => $this->getQuery('warehouse_type_id'),
-            'date_from' => $this->getQuery('date_from'),
-            'date_to' => $this->getQuery('date_to'),
             'search' => $this->getQuery('search'),
             'operation_type' => $this->getQuery('operation_type'),
+            'buyer_id' => $this->getQuery('buyer_id'),
+            'document_number' => $this->getQuery('document_number'),
         ];
+        $opType = $filters['operation_type'];
+        if ($opType == 1) {
+            $filters['supplier_id'] = $this->getQuery('supplier_id');
+        }
+        if ($opType == 2 || $opType == 3) {
+            $filters['buyer_id'] = $this->getQuery('buyer_id');
+        }
 
         // Получаем справочники для фильтров
         $suppliers = (new Supplier())->getAllSuppliers();
         $buyers = (new Buyer())->getAllBuyers();
         $propertyTypes = (new PropertyType())->getAllTypes();
         $warehouseTypes = (new WarehouseType())->getAllTypes();
+        $operationModel = new Operation();
+        $documentNumbers = $operationModel->getAllDocumentNumbers();
 
         // Получаем список операций (пока без фильтрации)
-        $operations = (new Operation())->getAllOperations($filters);
+        $operations = $operationModel->getAllOperations($filters);
 
         $this->view->render('warehouses/operations/index', [
             'operations' => $operations,
@@ -43,6 +49,7 @@ class OperationsController extends Controller {
             'propertyTypes' => $propertyTypes,
             'warehouseTypes' => $warehouseTypes,
             'filters' => $filters,
+            'documentNumbers' => $documentNumbers,
             'title' => 'Операции'
         ]);
     }
@@ -130,6 +137,43 @@ class OperationsController extends Controller {
             } else {
                 $_SESSION['error'] = 'Ошибка при обновлении операции';
                 header('Location: /warehouses/operations/edit/' . $id);
+                exit;
+            }
+        } else {
+            $_SESSION['error'] = 'Некорректный метод запроса';
+            header('Location: /warehouses/operations');
+            exit;
+        }
+    }
+
+    /**
+     * Сохранение новой операции
+     */
+    public function store() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $_POST;
+            // Приведение типов и обработка пустых значений
+            $data['quantity'] = isset($data['quantity']) ? (int)$data['quantity'] : null;
+            $data['volume'] = isset($data['volume']) ? (float)$data['volume'] : null;
+            $data['operation_date'] = isset($data['operation_date']) ? $data['operation_date'] : date('Y-m-d H:i:s');
+            $data['supplier_id'] = !empty($data['supplier_id']) ? (int)$data['supplier_id'] : null;
+            $data['buyer_id'] = !empty($data['buyer_id']) ? (int)$data['buyer_id'] : null;
+            $data['warehouse_id'] = !empty($data['warehouse_id']) ? (int)$data['warehouse_id'] : null;
+            $data['warehouse_id_to'] = !empty($data['warehouse_id_to']) ? (int)$data['warehouse_id_to'] : null;
+            $data['description'] = $data['description'] ?? '';
+            $data['item_id'] = (int)($data['item_id'] ?? 0);
+            $data['operation_type_id'] = (int)($data['operation_type_id'] ?? 0);
+            $data['document_number'] = $data['document_number'] ?? null;
+
+            $operationModel = new Operation();
+            $result = $operationModel->createOperation($data);
+            if ($result) {
+                $_SESSION['success'] = 'Операция успешно добавлена';
+                header('Location: /warehouses/operations');
+                exit;
+            } else {
+                $_SESSION['error'] = 'Ошибка при добавлении операции';
+                header('Location: /warehouses/operations/create');
                 exit;
             }
         } else {

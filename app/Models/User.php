@@ -97,6 +97,7 @@ class User extends Model {
             'firstName' => $data['username'], // Для совместимости
             'surName' => '', // Для совместимости
             'secondName' => '', // Для совместимости
+            'jobTitle' => $data['jobTitle'],
             'password' => $data['password'],
             'role' => $data['role'] ?? 'user',
             'created_at' => date('Y-m-d H:i:s')
@@ -110,6 +111,7 @@ class User extends Model {
         $updateData = [
             'username' => $data['username'],
             'email' => $data['email'],
+            'jobTitle' => $data['jobTitle'],
             'updated_at' => date('Y-m-d H:i:s')
         ];
         

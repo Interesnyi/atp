@@ -86,6 +86,7 @@ class UsersController extends Controller {
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
             $role = $_POST['role'] ?? 'user';
+            $jobTitle = $_POST['jobTitle'] ?? '';
             
             // Проверки полей
             if (empty($username)) {
@@ -115,7 +116,8 @@ class UsersController extends Controller {
                     'errors' => $errors,
                     'username' => $username,
                     'email' => $email,
-                    'role' => $role
+                    'role' => $role,
+                    'jobTitle' => $jobTitle
                 ]);
                 return;
             }
@@ -125,7 +127,8 @@ class UsersController extends Controller {
                 'username' => $username,
                 'email' => $email,
                 'password' => password_hash($password, PASSWORD_DEFAULT),
-                'role' => $role
+                'role' => $role,
+                'jobTitle' => $jobTitle ?? ''
             ];
             
             error_log("DEBUG store: попытка создать пользователя с данными: " . json_encode($data));
@@ -142,7 +145,8 @@ class UsersController extends Controller {
                     'errors' => $errors,
                     'username' => $username,
                     'email' => $email,
-                    'role' => $role
+                    'role' => $role,
+                    'jobTitle' => $jobTitle
                 ]);
             }
         } catch (\Exception $e) {
@@ -239,6 +243,7 @@ class UsersController extends Controller {
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
             $role = $_POST['role'] ?? 'user';
+            $jobTitle = $_POST['jobTitle'] ?? '';
             
             if (empty($username)) {
                 $errors[] = 'Имя пользователя обязательно';
@@ -269,7 +274,8 @@ class UsersController extends Controller {
             $data = [
                 'username' => $username,
                 'email' => $email,
-                'role' => $role
+                'role' => $role,
+                'jobTitle' => $jobTitle ?? ''
             ];
             
             // Если пароль указан, хешируем его

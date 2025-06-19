@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WarehousesController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\PurchasesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,5 +45,14 @@ Route::get('orders/view/{id}', 'OrdersController@view');
 Route::get('orders/edit/{id}', 'OrdersController@edit');
 Route::post('orders/update/{id}', 'OrdersController@update');
 Route::post('orders/delete/{id}', 'OrdersController@delete');
+
+// Закупки
+Route::get('/purchases', 'PurchasesController@index');
+Route::get('/purchases/create', 'PurchasesController@create');
+Route::post('/purchases/store', 'PurchasesController@store');
+Route::get('/purchases/edit/{id}', 'PurchasesController@edit');
+Route::post('/purchases/update/{id}', 'PurchasesController@update');
+Route::post('/purchases/delete/{id}', 'PurchasesController@delete');
+Route::post('/purchases/add-item/{id}', 'PurchasesController@addItem');
 
 require __DIR__.'/auth.php';

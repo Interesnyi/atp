@@ -206,6 +206,41 @@ $router->post('orders/work_categories/delete/{id}', 'OrdersWorkCategoriesControl
 
 $router->get('orders/api/cars_by_customer/{customerId}', 'OrdersCarsController', 'getCarsByCustomer');
 
+// Маршруты для раздела Закупки
+$router->get('purchases', 'PurchasesController', 'index');
+$router->get('purchases/create', 'PurchasesController', 'create');
+$router->post('purchases/store', 'PurchasesController', 'store');
+$router->get('purchases/edit/{id}', 'PurchasesController', 'edit');
+$router->post('purchases/update/{id}', 'PurchasesController', 'update');
+$router->post('purchases/delete/{id}', 'PurchasesController', 'delete');
+$router->post('purchases/add-item/{id}', 'PurchasesController', 'addItem');
+
+// --- Раздел Счета ---
+$router->get('invoices', 'InvoicesController', 'index');
+$router->get('invoices/show/{id}', 'InvoicesController', 'show');
+$router->get('invoices/create', 'InvoicesController', 'create');
+$router->post('invoices/store', 'InvoicesController', 'store');
+$router->get('invoices/edit/{id}', 'InvoicesController', 'edit');
+$router->post('invoices/update/{id}', 'InvoicesController', 'update');
+$router->post('invoices/delete/{id}', 'InvoicesController', 'delete');
+
+// --- Справочник Юр. лиц ---
+$router->get('legal-entities', 'LegalEntitiesController', 'index');
+$router->get('legal-entities/create', 'LegalEntitiesController', 'create');
+$router->post('legal-entities/store', 'LegalEntitiesController', 'store');
+$router->get('legal-entities/edit/{id}', 'LegalEntitiesController', 'edit');
+$router->post('legal-entities/update/{id}', 'LegalEntitiesController', 'update');
+$router->post('legal-entities/delete/{id}', 'LegalEntitiesController', 'delete');
+
+// --- Раздел Оплаты ---
+$router->get('payments', 'PaymentsController', 'index');
+$router->get('payments/show/{id}', 'PaymentsController', 'show');
+$router->get('payments/create', 'PaymentsController', 'create');
+$router->post('payments/store', 'PaymentsController', 'store');
+$router->get('payments/edit/{id}', 'PaymentsController', 'edit');
+$router->post('payments/update/{id}', 'PaymentsController', 'update');
+$router->post('payments/delete/{id}', 'PaymentsController', 'delete');
+
 // Обработчик 404 ошибки
 $router->setNotFoundHandler('ErrorController', 'notFound');
 

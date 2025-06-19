@@ -1,4 +1,4 @@
-<?php /** @var array $operations, $suppliers, $buyers, $propertyTypes, $filters, $title, $warehouseTypes, $categories */ ?>
+<?php /** @var array $operations, $suppliers, $buyers, $propertyTypes, $filters, $title, $warehouseTypes, $categories, $documentNumbers */ ?>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -19,67 +19,47 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <form class="d-flex" id="warehouseTypeForm" method="get" action="/warehouses/operations">
-                                <select name="warehouse_type_id" class="form-select w-auto me-2" id="warehouseTypeSelect">
+                        <form class="col-md-12 d-flex align-items-center" method="get" action="/warehouses/operations" id="mainFilterForm">
+                            <div class="me-2" style="min-width:200px;">
+                                <select name="warehouse_type_id" class="form-select" id="warehouseTypeSelect">
                                     <option value="">Все типы складов</option>
                                     <?php foreach ($warehouseTypes as $wt): ?>
-                                        <option value="<?= $wt['id'] ?>" <?= ($filters['warehouse_type_id'] == $wt['id']) ? 'selected' : '' ?>><?= htmlspecialchars($wt['name']) ?></option>
+                                        <option value="<?= $wt['id'] ?>" <?= (($filters['warehouse_type_id'] ?? '') == $wt['id']) ? 'selected' : '' ?>><?= htmlspecialchars($wt['name']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <button type="button" class="btn btn-outline-primary" id="showWarehouseTypeBtn">Показать</button>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="flex-grow-1 me-2">
+                                <input type="text" name="search" class="form-control" placeholder="Поиск по имуществу..." value="<?= htmlspecialchars($filters['search'] ?? '') ?>" id="searchInput">
+                            </div>
+                            <div class="me-2" style="min-width:180px;">
+                                <select name="operation_type" class="form-select" id="operationTypeSelect">
+                                    <option value="">Тип операции</option>
+                                    <option value="1" <?= ($filters['operation_type'] == 1) ? 'selected' : '' ?>>Приемка</option>
+                                    <option value="2" <?= ($filters['operation_type'] == 2) ? 'selected' : '' ?>>Выдача</option>
+                                    <option value="3" <?= ($filters['operation_type'] == 3) ? 'selected' : '' ?>>Списание</option>
+                                    <option value="4" <?= ($filters['operation_type'] == 4) ? 'selected' : '' ?>>Перемещение</option>
+                                    <option value="5" <?= ($filters['operation_type'] == 5) ? 'selected' : '' ?>>Розлив</option>
+                                    <option value="6" <?= ($filters['operation_type'] == 6) ? 'selected' : '' ?>>Инвентаризация</option>
+                                </select>
+                            </div>
+                            <div class="me-2" style="min-width:200px;">
+                                <select name="buyer_id" class="form-select" id="buyerSelect">
+                                    <option value="">Все получатели</option>
+                                    <?php foreach ($buyers as $buyer): ?>
+                                        <option value="<?= $buyer['id'] ?>" <?= (($filters['buyer_id'] ?? '') == $buyer['id']) ? 'selected' : '' ?>><?= htmlspecialchars($buyer['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="me-2" style="min-width:200px;">
+                                <select name="document_number" class="form-select" id="documentNumberSelect">
+                                    <option value="">Все документы</option>
+                                    <?php foreach ($documentNumbers as $docNum): ?>
+                                        <option value="<?= htmlspecialchars($docNum) ?>" <?= (($filters['document_number'] ?? '') == $docNum) ? 'selected' : '' ?>><?= htmlspecialchars($docNum) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </form>
                     </div>
-                    <form class="row g-2 mb-3" method="get">
-                        <div class="col-md-3">
-                            <input type="text" name="search" class="form-control" placeholder="Поиск по имуществу..." value="<?= htmlspecialchars($filters['search'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-2">
-                            <select name="supplier_id" class="form-select">
-                                <option value="">Поставщик</option>
-                                <?php foreach ($suppliers as $s): ?>
-                                    <option value="<?= $s['id'] ?>" <?= ($filters['supplier_id'] == $s['id']) ? 'selected' : '' ?>><?= htmlspecialchars($s['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="buyer_id" class="form-select">
-                                <option value="">Получатель</option>
-                                <?php foreach ($buyers as $b): ?>
-                                    <option value="<?= $b['id'] ?>" <?= ($filters['buyer_id'] == $b['id']) ? 'selected' : '' ?>><?= htmlspecialchars($b['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="category_id" class="form-select">
-                                <option value="">Категория имущества</option>
-                                <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= $cat['id'] ?>" <?= ($filters['category_id'] == $cat['id']) ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="operation_type" class="form-select">
-                                <option value="">Тип операции</option>
-                                <option value="1" <?= ($filters['operation_type'] == 1) ? 'selected' : '' ?>>Приемка</option>
-                                <option value="2" <?= ($filters['operation_type'] == 2) ? 'selected' : '' ?>>Выдача</option>
-                                <option value="3" <?= ($filters['operation_type'] == 3) ? 'selected' : '' ?>>Списание</option>
-                                <option value="4" <?= ($filters['operation_type'] == 4) ? 'selected' : '' ?>>Перемещение</option>
-                                <option value="5" <?= ($filters['operation_type'] == 5) ? 'selected' : '' ?>>Розлив</option>
-                                <option value="6" <?= ($filters['operation_type'] == 6) ? 'selected' : '' ?>>Инвентаризация</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="date" name="date_from" class="form-control" value="<?= htmlspecialchars($filters['date_from'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="date" name="date_to" class="form-control" value="<?= htmlspecialchars($filters['date_to'] ?? '') ?>">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-search"></i></button>
-                        </div>
-                    </form>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -89,9 +69,9 @@
                                     <th>Дата</th>
                                     <th>Тип операции</th>
                                     <th>Имущество</th>
-                                    <th>Категория имущества</th>
                                     <th>Поставщик</th>
                                     <th>Получатель</th>
+                                    <th>Номер документа</th>
                                     <th>Количество</th>
                                     <th>Сумма</th>
                                     <th>Действия</th>
@@ -100,7 +80,7 @@
                             <tbody>
                                 <?php if (empty($operations)): ?>
                                     <tr>
-                                        <td colspan="9" class="text-center py-4">
+                                        <td colspan="10" class="text-center py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Список операций пуст</p>
                                         </td>
@@ -113,9 +93,9 @@
                                             </td>
                                             <td><?= htmlspecialchars($op['operation_type_name'] ?? $op['sign_of_calculation'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['item_name'] ?? $op['property_name'] ?? '-') ?></td>
-                                            <td><?= htmlspecialchars($op['category_name'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['supplier_name'] ?? '-') ?></td>
                                             <td><?= htmlspecialchars($op['buyer_name'] ?? '-') ?></td>
+                                            <td><?= htmlspecialchars($op['document_number'] ?? '-') ?></td>
                                             <td>
                                                 <?php if (isset($op['volume']) && $op['volume'] > 0): ?>
                                                     <?= htmlspecialchars($op['volume']) ?> л
@@ -148,6 +128,33 @@
         </div>
     </div>
 </div>
+<?php if (!empty($filters['document_number']) && !empty($operations)): ?>
+    <?php
+        $totalSum = 0;
+        $dates = array_column($operations, 'operation_date');
+        $minDate = min($dates);
+        $maxDate = max($dates);
+        foreach ($operations as $op) {
+            $totalSum += floatval($op['total_cost'] ?? $op['summa'] ?? 0);
+        }
+    ?>
+    <div class="card mt-3">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+            <div class="fw-bold fs-5">
+                Документ: <?= htmlspecialchars($filters['document_number']) ?>
+            </div>
+            <div class="text-muted ms-3">
+                <?= date('d.m.Y', strtotime($minDate)) ?> - <?= date('d.m.Y', strtotime($maxDate)) ?>
+            </div>
+            <div class="ms-3">
+                <span class="badge bg-primary fs-6"><?= number_format($totalSum, 2, '.', ' ') ?> руб.</span>
+            </div>
+            <div class="ms-3">
+                <span class="badge bg-secondary fs-6"><?= count($operations) ?> позиций</span>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
@@ -168,13 +175,16 @@ $(document).ready(function() {
     });
 });
 
-document.getElementById('showWarehouseTypeBtn').onclick = function() {
-    var select = document.getElementById('warehouseTypeSelect');
-    var val = select.value;
-    if (val) {
-        window.location.href = '/warehouses/operations?warehouse_type_id=' + encodeURIComponent(val);
-    } else {
-        window.location.href = '/warehouses/operations';
-    }
-};
+// Автоотправка формы при изменении типа склада или типа операции
+$('#warehouseTypeSelect, #operationTypeSelect, #buyerSelect, #documentNumberSelect').on('change', function() {
+    $('#mainFilterForm').submit();
+});
+// Автопоиск по имуществу с debounce
+let searchTimeout = null;
+$('#searchInput').on('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+        $('#mainFilterForm').submit();
+    }, 500);
+});
 </script> 

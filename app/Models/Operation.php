@@ -70,6 +70,22 @@ class Operation extends Model {
             $params[] = $filters['warehouse_type_id'];
         }
         
+        if (!empty($filters['search'])) {
+            $sql .= " AND (i.name LIKE ? OR i.article LIKE ?)";
+            $params[] = '%' . $filters['search'] . '%';
+            $params[] = '%' . $filters['search'] . '%';
+        }
+        
+        if (!empty($filters['buyer_id'])) {
+            $sql .= " AND o.buyer_id = ?";
+            $params[] = $filters['buyer_id'];
+        }
+        
+        if (!empty($filters['document_number'])) {
+            $sql .= " AND o.document_number = ?";
+            $params[] = $filters['document_number'];
+        }
+        
         $sql .= " ORDER BY o.operation_date DESC, o.id DESC";
         
         return $this->db->fetchAll($sql, $params);
@@ -531,5 +547,15 @@ class Operation extends Model {
             $this->createInventoryItem($itemId, $warehouseId, $quantity, $hasVolume ? $volume : null);
         }
         $this->logInventory('Пересчёт остатков', ['item_id' => $itemId, 'warehouse_id' => $warehouseId, 'quantity' => $quantity, 'volume' => $volume]);
+    }
+
+    /**
+     * Получение всех уникальных номеров документов
+     * @return array
+     */
+    public function getAllDocumentNumbers() {
+        $sql = "SELECT DISTINCT document_number FROM {$this->table} WHERE is_deleted = 0 AND document_number IS NOT NULL AND document_number != '' ORDER BY document_number";
+        $rows = $this->db->fetchAll($sql);
+        return array_column($rows, 'document_number');
     }
 } 

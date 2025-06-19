@@ -106,6 +106,12 @@
                     </li>
                     
                     <li class="nav-item">
+                        <a class="nav-link" href="/invoices">
+                            <i class="fas fa-file-invoice"></i> Счета
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
                         <a class="nav-link" href="/balance">
                             <i class="fas fa-money-bill-wave"></i> Финансы
                         </a>

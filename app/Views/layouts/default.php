@@ -145,21 +145,30 @@
                     </li>
                     <?php endif; ?>
                     
-                    <?php // Раздел "Пользователи" ?>
-                    <?php if ($role === 'admin' || isset($userPermissions['users.view'])): ?>
+                    <?php // Раздел "Счета" ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/users">
-                            <i class="bi bi-people"></i> Пользователи
+                        <a class="nav-link" href="/invoices">
+                            <i class="bi bi-file-earmark-text"></i> Счета
                         </a>
                     </li>
-                    <?php endif; ?>
-                    
-                    <?php // Раздел "Управление ролями" - только для администраторов ?>
-                    <?php if ($role === 'admin'): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/roles">
-                            <i class="bi bi-shield-lock"></i> Управление ролями
+                        <a class="nav-link" href="/payments">
+                            <i class="bi bi-cash-coin"></i> Оплаты
                         </a>
+                    </li>
+                    
+                    <?php // Раздел "Пользователи" и "Управление ролями" объединён в выпадающий список ?>
+                    <?php if ($role === 'admin' || isset($userPermissions['users.view'])): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people"></i> Пользователи
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="usersDropdown">
+                            <li><a class="dropdown-item" href="/users"><i class="bi bi-people"></i> Все пользователи</a></li>
+                            <?php if ($role === 'admin'): ?>
+                            <li><a class="dropdown-item" href="/roles"><i class="bi bi-shield-lock"></i> Управление ролями</a></li>
+                            <?php endif; ?>
+                        </ul>
                     </li>
                     <?php endif; ?>
                     
@@ -180,6 +189,11 @@
                         </a>
                     </li>
                     <?php endif; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/purchases">
+                            <i class="bi bi-cart"></i> Закупки
+                        </a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">

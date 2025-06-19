@@ -1,7 +1,7 @@
 <div class="container py-4">
     <h4><?= htmlspecialchars(
         $title ?? 'Добавить операцию') ?></h4>
-    <form method="post" action="/warehouses/operations/store" id="operationForm">
+    <form method="post" id="operationForm">
         <div class="row mb-3">
             <div class="col-md-4">
                 <label for="item_id" class="form-label">Товар</label>
@@ -40,7 +40,7 @@
             </div>
             <div class="col-md-4">
                 <label for="warehouse_id" class="form-label">Место хранения</label>
-                <select class="form-select" id="warehouse_id" name="warehouse_id" required>
+                <select class="form-select" id="warehouse_id" name="warehouse_id">
                     <option value="">Выберите место хранения...</option>
                     <?php foreach ($warehouses as $w): ?>
                         <option value="<?= $w['id'] ?>"><?= htmlspecialchars($w['name']) ?></option>
@@ -49,6 +49,10 @@
             </div>
         </div>
         <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="document_number" class="form-label">Номер счёта</label>
+                <input type="text" class="form-control" id="document_number" name="document_number" placeholder="Введите номер счёта">
+            </div>
             <div class="col-md-4" id="warehouse_id_to_wrap" style="display:none;">
                 <label for="warehouse_id_to" class="form-label">Место хранения (получатель)</label>
                 <select class="form-select" id="warehouse_id_to" name="warehouse_id_to">
