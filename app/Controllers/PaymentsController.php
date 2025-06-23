@@ -11,8 +11,16 @@ use App\Models\PaymentInvoice;
 
 class PaymentsController extends Controller
 {
+    private function requireAuth() {
+        if (empty($_SESSION['id'])) {
+            header('Location: /login');
+            exit;
+        }
+    }
+
     public function index()
     {
+        $this->requireAuth();
         $paymentModel = new Payment();
         $filters = $_GET;
         $payments = $paymentModel->getAll($filters);
@@ -46,6 +54,7 @@ class PaymentsController extends Controller
 
     public function create()
     {
+        $this->requireAuth();
         $buyerModel = new Buyer();
         $legalEntityModel = new LegalEntity();
         $invoiceModel = new Invoice();
@@ -61,6 +70,7 @@ class PaymentsController extends Controller
 
     public function store()
     {
+        $this->requireAuth();
         $paymentModel = new Payment();
         $paymentInvoiceModel = new PaymentInvoice();
         $data = [
@@ -85,6 +95,7 @@ class PaymentsController extends Controller
 
     public function edit($id)
     {
+        $this->requireAuth();
         $paymentModel = new Payment();
         $payment = $paymentModel->find($id);
         $buyerModel = new Buyer();
@@ -106,6 +117,7 @@ class PaymentsController extends Controller
 
     public function update($id)
     {
+        $this->requireAuth();
         $paymentModel = new Payment();
         $paymentInvoiceModel = new PaymentInvoice();
         $data = [
@@ -133,6 +145,7 @@ class PaymentsController extends Controller
 
     public function show($id)
     {
+        $this->requireAuth();
         $paymentModel = new Payment();
         $buyerModel = new Buyer();
         $legalEntityModel = new LegalEntity();
@@ -157,6 +170,7 @@ class PaymentsController extends Controller
 
     public function delete($id)
     {
+        $this->requireAuth();
         PaymentInvoice::where(['payment_id' => $id])->delete();
         Payment::delete($id);
         header('Location: /payments');

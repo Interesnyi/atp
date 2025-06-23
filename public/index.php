@@ -224,6 +224,10 @@ $router->get('invoices/edit/{id}', 'InvoicesController', 'edit');
 $router->post('invoices/update/{id}', 'InvoicesController', 'update');
 $router->post('invoices/delete/{id}', 'InvoicesController', 'delete');
 
+// --- Файлы к счету ---
+$router->post('invoices/{invoice_id}/upload-file', 'InvoicesController', 'uploadFile');
+$router->post('invoices/{invoice_id}/delete-file/{file_id}', 'InvoicesController', 'deleteFile');
+
 // --- Справочник Юр. лиц ---
 $router->get('legal-entities', 'LegalEntitiesController', 'index');
 $router->get('legal-entities/create', 'LegalEntitiesController', 'create');
@@ -254,5 +258,9 @@ if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
     exit;
 }
 
+$router->get('files/invoice/{invoice_id}/{file}', 'FileController', 'invoiceFile');
+
 // Запускаем роутер
-$router->dispatch(); 
+$router->dispatch();
+
+$router->get('files/invoice/{invoice_id}/{file}', 'FileController', 'invoiceFile'); 

@@ -1,4 +1,9 @@
 RewriteEngine On
+
+# Запретить прямой доступ к файлам счетов
+RewriteRule ^uploads/invoices/ - [F,L]
+
+# Остальные правила
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L] 

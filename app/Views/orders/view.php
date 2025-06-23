@@ -31,6 +31,20 @@
                 </tr>
             <?php endforeach; ?>
             </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">ИТОГО</th>
+                <th colspan="2">
+                    <?php
+                    $totalWorks = 0;
+                    foreach ($works as $w) {
+                        $totalWorks += (float)$w['total'];
+                    }
+                    echo number_format($totalWorks, 2, '.', ' ');
+                    ?>
+                </th>
+            </tr>
+            </tfoot>
         </table>
         <h5>Материалы исполнителя</h5>
         <table class="table table-bordered table-sm">

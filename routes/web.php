@@ -6,6 +6,7 @@ use App\Http\Controllers\WarehousesController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\PurchasesController;
+use App\Http\Controllers\InvoicesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,5 +55,9 @@ Route::get('/purchases/edit/{id}', 'PurchasesController@edit');
 Route::post('/purchases/update/{id}', 'PurchasesController@update');
 Route::post('/purchases/delete/{id}', 'PurchasesController@delete');
 Route::post('/purchases/add-item/{id}', 'PurchasesController@addItem');
+
+// Файлы к счету
+Route::post('/invoices/{invoice_id}/upload-file', 'InvoicesController@uploadFile');
+Route::post('/invoices/{invoice_id}/delete-file/{file_id}', 'InvoicesController@deleteFile');
 
 require __DIR__.'/auth.php';

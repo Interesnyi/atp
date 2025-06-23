@@ -30,7 +30,12 @@
         </tbody>
     </table>
     <hr>
-    <h5>Добавить позицию</h5>
+    <h5 class="d-flex justify-content-between align-items-center">
+        <span>Добавить позицию</span>
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            <i class="bi bi-plus"></i> Добавить новое имущество
+        </button>
+    </h5>
     <form method="post" action="/purchases/add-item/<?= (int)$purchase['id'] ?>">
         <div class="row mb-3">
             <div class="col-md-4">
@@ -62,6 +67,48 @@
     </form>
     <a href="/purchases" class="btn btn-secondary mt-3">К списку закупок</a>
 </div>
+
+<!-- Модальное окно для добавления имущества -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addItemModalLabel">Добавить имущество</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-item-form" action="/warehouses/items/store" method="POST">
+          <div class="mb-3">
+            <label for="modal_name" class="form-label">Наименование</label>
+            <input type="text" class="form-control" id="modal_name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="modal_article" class="form-label">Артикул</label>
+            <input type="text" class="form-control" id="modal_article" name="article">
+          </div>
+          <div class="mb-3">
+            <label for="modal_category_id" class="form-label">Категория</label>
+            <select class="form-select" id="modal_category_id" name="category_id" required>
+              <option value="">Выберите категорию...</option>
+              <?php foreach ($categories as $cat): ?>
+                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="modal_has_volume" class="form-label">Объем (товар на розлив)</label>
+            <select class="form-select" id="modal_has_volume" name="has_volume">
+              <option value="0">Нет</option>
+              <option value="1">Да</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Фильтрация имущества по категории
 $(document).ready(function() {

@@ -9,8 +9,8 @@ class Router {
 
     public function add($method, $route, $controller, $action) {
         $route = trim($route, '/');
-        $route = preg_replace('/\{([a-zA-Z]+)\}/', '(?P<\1>[^/]+)', $route);
-        $route = "/^" . str_replace('/', '\/', $route) . "$/";
+        $route = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<\1>[^/]+)', $route);
+        $route = "#^" . $route . "$#";
         
         $this->routes[$method][$route] = [
             'controller' => $controller,
@@ -34,11 +34,14 @@ class Router {
     }
 
     public function match($url, $method) {
+        file_put_contents(__DIR__ . '/../../logs/debug.log', "MATCH: url=$url, method=$method\n", FILE_APPEND);
         $url = trim($url, '/');
         
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $route => $params) {
+                file_put_contents(__DIR__ . '/../../logs/debug.log', "Trying route: $route\n", FILE_APPEND);
                 if (preg_match($route, $url, $matches)) {
+                    file_put_contents(__DIR__ . '/../../logs/debug.log', "Matched: $route\n", FILE_APPEND);
                     foreach ($matches as $key => $match) {
                         if (is_string($key)) {
                             $params[$key] = $match;
@@ -50,12 +53,14 @@ class Router {
             }
         }
         
+        file_put_contents(__DIR__ . '/../../logs/debug.log', "No match found\n", FILE_APPEND);
         return false;
     }
 
     public function dispatch($url = null, $method = null) {
         $url = $url ?? $_SERVER['REQUEST_URI'];
         $method = $method ?? $_SERVER['REQUEST_METHOD'];
+        file_put_contents(__DIR__ . '/../../logs/debug.log', "DISPATCH: url=$url, method=$method\n", FILE_APPEND);
         
         $url = parse_url($url, PHP_URL_PATH);
         

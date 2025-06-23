@@ -81,22 +81,149 @@
                         </div>
                     <?php endif; ?>
                     <h5 class="mt-4 mb-3">Файлы по счёту</h5>
-                    <ul class="list-group mb-3">
-                        <?php if (empty($files)): ?>
-                            <li class="list-group-item text-muted">Нет файлов</li>
-                        <?php else: ?>
-                            <?php foreach ($files as $file): ?>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="/uploads/<?= htmlspecialchars($file['file_path']) ?>" target="_blank">
-                                        <i class="bi bi-paperclip"></i> <?= htmlspecialchars($file['file_path']) ?>
-                                    </a>
-                                    <span class="text-muted small"><?= date('d.m.Y H:i', strtotime($file['uploaded_at'])) ?></span>
-                                </li>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <b>Скриншот счёта</b>
+                            <form id="upload-invoice-file" action="/invoices/<?= $invoice['id'] ?>/upload-file" method="post" enctype="multipart/form-data" class="mb-2">
+                                <input type="hidden" name="file_type" value="invoice">
+                                <input type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Загрузить</button>
+                            </form>
+                            <div id="invoice-files-list">
+                            <?php foreach ($files as $file): if ($file['file_type'] !== 'invoice') continue; ?>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <?php if (preg_match('/\.(jpg|jpeg|png)$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <img src="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" alt="Скриншот счёта" style="max-width: 80px; max-height: 80px; border:1px solid #ccc; margin-right:8px;">
+                                        </a>
+                                    <?php elseif (preg_match('/\.pdf$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <i class="bi bi-file-earmark-pdf" style="font-size:2rem;color:#b00;"></i> PDF
+                                        </a>
+                                    <?php endif; ?>
+                                    <form class="delete-file-form ms-2" data-file-id="<?= $file['id'] ?>" data-invoice-id="<?= $invoice['id'] ?>" method="post">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    </form>
+                                </div>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Скриншот письма</b>
+                            <form id="upload-email-file" action="/invoices/<?= $invoice['id'] ?>/upload-file" method="post" enctype="multipart/form-data" class="mb-2">
+                                <input type="hidden" name="file_type" value="email">
+                                <input type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Загрузить</button>
+                            </form>
+                            <div id="email-files-list">
+                            <?php foreach ($files as $file): if ($file['file_type'] !== 'email') continue; ?>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <?php if (preg_match('/\.(jpg|jpeg|png)$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <img src="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" alt="Скриншот письма" style="max-width: 80px; max-height: 80px; border:1px solid #ccc; margin-right:8px;">
+                                        </a>
+                                    <?php elseif (preg_match('/\.pdf$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <i class="bi bi-file-earmark-pdf" style="font-size:2rem;color:#b00;"></i> PDF
+                                        </a>
+                                    <?php endif; ?>
+                                    <form class="delete-file-form ms-2" data-file-id="<?= $file['id'] ?>" data-invoice-id="<?= $invoice['id'] ?>" method="post">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    </form>
+                                </div>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Накладная (файл выдачи товара)</b>
+                            <form id="upload-waybill-file" action="/invoices/<?= $invoice['id'] ?>/upload-file" method="post" enctype="multipart/form-data" class="mb-2">
+                                <input type="hidden" name="file_type" value="waybill">
+                                <input type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Загрузить</button>
+                            </form>
+                            <div id="waybill-files-list">
+                            <?php foreach ($files as $file): if ($file['file_type'] !== 'waybill') continue; ?>
+                                <div class="mb-2 d-flex align-items-center">
+                                    <?php if (preg_match('/\.(jpg|jpeg|png)$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <img src="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" alt="Накладная" style="max-width: 80px; max-height: 80px; border:1px solid #ccc; margin-right:8px;">
+                                        </a>
+                                    <?php elseif (preg_match('/\.pdf$/i', $file['file_name'])): ?>
+                                        <a href="/files/invoice/<?= $invoice['id'] ?>/<?= rawurlencode($file['file_name']) ?>" target="_blank">
+                                            <i class="bi bi-file-earmark-pdf" style="font-size:2rem;color:#b00;"></i> PDF
+                                        </a>
+                                    <?php endif; ?>
+                                    <form class="delete-file-form ms-2" data-file-id="<?= $file['id'] ?>" data-invoice-id="<?= $invoice['id'] ?>" method="post">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    </form>
+                                </div>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<!-- jQuery (если не подключён) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function() {
+    // AJAX загрузка файлов
+    $('#upload-invoice-file, #upload-email-file, #upload-waybill-file').on('submit', function(e) {
+        e.preventDefault();
+        var form = this;
+        var formData = new FormData(form);
+        var fileType = $(form).find('input[name="file_type"]').val();
+        var filesListId = '';
+        if (fileType === 'invoice') filesListId = '#invoice-files-list';
+        if (fileType === 'email') filesListId = '#email-files-list';
+        if (fileType === 'waybill') filesListId = '#waybill-files-list';
+        $.ajax({
+            url: form.action,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $(filesListId).html(response.html);
+                    form.reset();
+                } else {
+                    alert(response.error || 'Ошибка загрузки файла');
+                }
+            },
+            error: function(xhr) {
+                alert('Ошибка загрузки: ' + xhr.responseText);
+            }
+        });
+    });
+    // AJAX удаление файлов
+    $(document).on('submit', '.delete-file-form', function(e) {
+        e.preventDefault();
+        if (!confirm('Удалить файл?')) return;
+        var form = this;
+        var fileId = $(form).data('file-id');
+        var invoiceId = $(form).data('invoice-id');
+        var parentDiv = $(form).closest('div');
+        $.ajax({
+            url: '/invoices/' + invoiceId + '/delete-file/' + fileId,
+            type: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    parentDiv.remove();
+                } else {
+                    alert(response.error || 'Ошибка удаления файла');
+                }
+            },
+            error: function(xhr) {
+                alert('Ошибка удаления: ' + xhr.responseText);
+            }
+        });
+    });
+});
+</script> 
