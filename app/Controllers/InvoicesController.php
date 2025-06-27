@@ -66,6 +66,9 @@ class InvoicesController extends Controller {
                     $data[$dateField] = null;
                 }
             }
+            if (isset($_POST['manual_amount'])) {
+                $data['manual_amount'] = $_POST['manual_amount'];
+            }
             $id = $invoiceModel->create($data);
             header('Location: /invoices/show/' . $id);
             exit;
@@ -95,6 +98,9 @@ class InvoicesController extends Controller {
                 if (empty($data[$dateField])) {
                     $data[$dateField] = null;
                 }
+            }
+            if (isset($_POST['manual_amount'])) {
+                $data['manual_amount'] = $_POST['manual_amount'];
             }
             $invoiceModel->update($id, $data);
             header('Location: /invoices/show/' . $id);

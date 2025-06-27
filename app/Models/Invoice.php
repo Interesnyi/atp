@@ -42,7 +42,7 @@ class Invoice extends Model {
     }
 
     public function create($data) {
-        $sql = "INSERT INTO {$this->table} (number, date, legal_entity_id, status_issued, status_shipped, status_paid, date_issued, date_shipped, date_paid, comment, total_amount, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        $sql = "INSERT INTO {$this->table} (number, date, legal_entity_id, status_issued, status_shipped, status_paid, date_issued, date_shipped, date_paid, comment, total_amount, manual_amount, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
         $totalAmount = 0;
         $this->db->execute($sql, [
             $data['number'],
@@ -55,7 +55,8 @@ class Invoice extends Model {
             $data['date_shipped'] ?? null,
             $data['date_paid'] ?? null,
             $data['comment'] ?? null,
-            $totalAmount
+            $totalAmount,
+            $data['manual_amount'] ?? null
         ]);
         return $this->db->lastInsertId();
     }
@@ -68,7 +69,7 @@ class Invoice extends Model {
         foreach ($operations as $op) {
             $totalAmount += $op['total_cost'];
         }
-        $sql = "UPDATE {$this->table} SET number=?, date=?, legal_entity_id=?, status_issued=?, status_shipped=?, status_paid=?, date_issued=?, date_shipped=?, date_paid=?, comment=?, total_amount=? WHERE id=?";
+        $sql = "UPDATE {$this->table} SET number=?, date=?, legal_entity_id=?, status_issued=?, status_shipped=?, status_paid=?, date_issued=?, date_shipped=?, date_paid=?, comment=?, total_amount=?, manual_amount=? WHERE id=?";
         return $this->db->execute($sql, [
             $data['number'],
             $data['date'],
@@ -81,6 +82,7 @@ class Invoice extends Model {
             $data['date_paid'] ?? null,
             $data['comment'] ?? null,
             $totalAmount,
+            $data['manual_amount'] ?? null,
             $id
         ]) > 0;
     }

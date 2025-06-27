@@ -65,6 +65,14 @@
                             <label for="comment" class="form-label">Комментарий</label>
                             <textarea class="form-control" id="comment" name="comment" rows="2"><?= htmlspecialchars($invoice['comment']) ?></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="total_amount" class="form-label">Сумма по операциям</label>
+                            <input type="text" class="form-control" id="total_amount" name="total_amount" value="<?= number_format($invoice['total_amount'] ?? 0, 2, '.', ' ') ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="manual_amount" class="form-label">Сумма в счёте (ручная)</label>
+                            <input type="number" step="0.01" class="form-control" id="manual_amount" name="manual_amount" value="<?= htmlspecialchars($invoice['manual_amount'] ?? '') ?>">
+                        </div>
                         <button type="submit" class="btn btn-success">Сохранить</button>
                         <a href="/invoices/show/<?= $invoice['id'] ?>" class="btn btn-secondary">Отмена</a>
                     </form>

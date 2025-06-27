@@ -45,7 +45,17 @@
                                                 <span class="badge bg-<?= $inv['status_paid'] ? 'success' : 'secondary' ?>">Оплачен<?php if (!empty($inv['date_paid'])): ?> (<?= date('d.m.Y', strtotime($inv['date_paid'])) ?>)<?php endif; ?></span>
                                             </td>
                                             <td><?= htmlspecialchars($inv['comment']) ?></td>
-                                            <td><?= number_format($inv['total_amount'], 2, '.', ' ') ?></td>
+                                            <td>
+                                                <?php if (!empty($inv['manual_amount'])): ?>
+                                                    <span title="Фактическая сумма / Сумма в счёте">
+                                                        <?= number_format($inv['total_amount'], 2, '.', ' ') ?>
+                                                        <span class="text-muted">/</span>
+                                                        <b><?= number_format($inv['manual_amount'], 2, '.', ' ') ?></b>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <?= number_format($inv['total_amount'], 2, '.', ' ') ?>
+                                                <?php endif; ?>
+                                            </td>
                                             <td>
                                                 <a href="/invoices/show/<?= $inv['id'] ?>" class="btn btn-outline-primary btn-sm" title="Просмотр"><i class="bi bi-eye"></i></a>
                                                 <a href="/invoices/edit/<?= $inv['id'] ?>" class="btn btn-outline-secondary btn-sm" title="Редактировать"><i class="bi bi-pencil"></i></a>
