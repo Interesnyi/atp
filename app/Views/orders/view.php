@@ -7,6 +7,11 @@
             <b>Статус:</b> <?= htmlspecialchars($order['status']) ?>
             <b>Менеджер:</b> <?= htmlspecialchars($order['manager']) ?>
         </div>
+        <?php if (!empty($order['contract_number'])): ?>
+        <div class="mb-3">
+            <b>Договор:</b> №<?= htmlspecialchars($order['contract_number']) ?> от <?= htmlspecialchars($order['contract_date']) ?>
+        </div>
+        <?php endif; ?>
         <div class="row mb-3">
             <div class="col-md-6">
                 <h5>Заказчик</h5>
@@ -46,6 +51,33 @@
             </tr>
             </tfoot>
         </table>
+        <h4 class="mt-4">Запчасти</h4>
+        <?php if (!empty($orderParts)): ?>
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Наименование</th>
+                    <th>Артикул</th>
+                    <th>Кол-во</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($orderParts as $part): ?>
+                <tr>
+                    <td><?= htmlspecialchars($part['name']) ?></td>
+                    <td><?= htmlspecialchars($part['article']) ?></td>
+                    <td><?= htmlspecialchars($part['quantity']) ?></td>
+                    <td><?= number_format($part['price'], 2, '.', ' ') ?></td>
+                    <td><?= number_format($part['total'], 2, '.', ' ') ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <p class="text-muted">Нет запчастей</p>
+        <?php endif; ?>
         <h5>Материалы исполнителя</h5>
         <table class="table table-bordered table-sm">
             <thead><tr><th>Наименование</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead>
@@ -80,6 +112,7 @@
         </ul>
         <a href="/orders" class="btn btn-secondary mt-3">Назад к списку</a>
         <a href="/orders/edit/<?= $order['id'] ?>" class="btn btn-primary mt-3">Редактировать</a>
+        <a href="/orders/download/<?= $order['id'] ?>" class="btn btn-outline-success mt-3">Скачать Word</a>
     </div>
   </div>
 </div> 

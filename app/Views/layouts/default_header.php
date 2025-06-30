@@ -87,6 +87,12 @@
                             <i class="fas fa-tachometer-alt"></i> Панель управления
                         </a>
                     </li>
+                    <!-- Раздел Ремонты -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/repairs">
+                            <i class="bi bi-tools"></i> Ремонты
+                        </a>
+                    </li>
                     
                     <!-- Раздел Складов -->
                     <li class="nav-item dropdown">

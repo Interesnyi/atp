@@ -24,7 +24,9 @@
                 <a href="/orders/create" class="btn btn-success me-2"><i class="bi bi-plus"></i> Новый заказ-наряд</a>
                 <a href="/orders/customers" class="btn btn-outline-primary me-2">Заказчики</a>
                 <a href="/orders/cars" class="btn btn-outline-primary me-2">Автомобили</a>
-                <a href="/orders/work_types" class="btn btn-outline-primary">Работы</a>
+                <a href="/orders/work_types" class="btn btn-outline-primary me-2">Работы</a>
+                <a href="/inspection-acts" class="btn btn-outline-primary me-2">Акты осмотра</a>
+                <a href="/contracts" class="btn btn-outline-primary">Договоры</a>
             </div>
         </div>
         <div class="card-body">

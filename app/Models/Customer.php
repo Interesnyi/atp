@@ -35,13 +35,22 @@ class Customer extends Model {
      * @return int ID созданного покупателя
      */
     public function createCustomer($data) {
-        $sql = "INSERT INTO {$this->table} (company_name, contact_person, is_individual, phone, email, description, is_deleted) VALUES (?, ?, ?, ?, ?, ?, 0)";
+        $sql = "INSERT INTO {$this->table} (company_name, contact_person, position, is_individual, phone, email, address, inn, ogrn, bank_name, bik, account_number, correspondent_account, org_card_file, description, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
         $this->db->execute($sql, [
             $data['company_name'] ?? '',
             $data['contact_person'] ?? '',
+            $data['position'] ?? '',
             !empty($data['is_individual']) ? 1 : 0,
             $data['phone'] ?? '',
             $data['email'] ?? '',
+            $data['address'] ?? '',
+            $data['inn'] ?? '',
+            $data['ogrn'] ?? '',
+            $data['bank_name'] ?? '',
+            $data['bik'] ?? '',
+            $data['account_number'] ?? '',
+            $data['correspondent_account'] ?? '',
+            $data['org_card_file'] ?? '',
             $data['description'] ?? ''
         ]);
         return $this->db->lastInsertId();
@@ -55,13 +64,22 @@ class Customer extends Model {
      * @return bool
      */
     public function updateCustomer($id, $data) {
-        $sql = "UPDATE {$this->table} SET company_name=?, contact_person=?, is_individual=?, phone=?, email=?, description=? WHERE id=?";
+        $sql = "UPDATE {$this->table} SET company_name=?, contact_person=?, position=?, is_individual=?, phone=?, email=?, address=?, inn=?, ogrn=?, bank_name=?, bik=?, account_number=?, correspondent_account=?, org_card_file=?, description=? WHERE id=?";
         return $this->db->execute($sql, [
             $data['company_name'] ?? '',
             $data['contact_person'] ?? '',
+            $data['position'] ?? '',
             !empty($data['is_individual']) ? 1 : 0,
             $data['phone'] ?? '',
             $data['email'] ?? '',
+            $data['address'] ?? '',
+            $data['inn'] ?? '',
+            $data['ogrn'] ?? '',
+            $data['bank_name'] ?? '',
+            $data['bik'] ?? '',
+            $data['account_number'] ?? '',
+            $data['correspondent_account'] ?? '',
+            $data['org_card_file'] ?? '',
             $data['description'] ?? '',
             $id
         ]) > 0;

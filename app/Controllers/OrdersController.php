@@ -25,12 +25,16 @@ class OrdersController extends Controller {
         $workTypes = (new WorkType())->getAllWorkTypes();
         $customerMaterials = (new CustomerMaterial())->getAllCustomerMaterials();
         $users = (new User())->getAllUsers();
+        $contracts = (new \App\Models\Contract())->getAll();
+        $parts = (new \App\Models\Part())->getAllParts();
         $this->view->render('orders/create', [
             'customers' => $customers,
             'cars' => $cars,
             'workTypes' => $workTypes,
             'customerMaterials' => $customerMaterials,
             'users' => $users,
+            'contracts' => $contracts,
+            'parts' => $parts,
             'title' => 'Создать заказ-наряд'
         ]);
     }
@@ -63,6 +67,20 @@ class OrdersController extends Controller {
                 ]);
             }
         }
+        // Сохраняем запчасти
+        if (!empty($data['order_parts']) && is_array($data['order_parts'])) {
+            $orderPartModel = new \App\Models\OrderPart();
+            foreach ($data['order_parts'] as $part) {
+                if (empty($part['part_id'])) continue;
+                $orderPartModel->createPart([
+                    'order_id' => $orderId,
+                    'part_id' => $part['part_id'],
+                    'quantity' => $part['quantity'] ?? 1,
+                    'price' => $part['price'] ?? 0,
+                    'total' => $part['total'] ?? 0
+                ]);
+            }
+        }
         header('Location: /orders/view/' . $orderId);
         exit;
     }
@@ -74,12 +92,14 @@ class OrdersController extends Controller {
         $materials = $orderModel->getMaterials($id);
         $customerMaterials = $orderModel->getCustomerMaterials($id);
         $files = $orderModel->getFiles($id);
+        $orderParts = (new \App\Models\OrderPart())->getParts($id);
         $this->view->render('orders/view', [
             'order' => $order,
             'works' => $works,
             'materials' => $materials,
             'customerMaterials' => $customerMaterials,
             'files' => $files,
+            'orderParts' => $orderParts,
             'title' => 'Просмотр заказ-наряда'
         ]);
     }
@@ -96,6 +116,9 @@ class OrdersController extends Controller {
         $customerMats = $orderModel->getCustomerMaterials($id);
         $files = $orderModel->getFiles($id);
         $users = (new User())->getAllUsers();
+        $contracts = (new \App\Models\Contract())->getAll();
+        $parts = (new \App\Models\Part())->getAllParts();
+        $orderParts = (new \App\Models\OrderPart())->getParts($id);
         $this->view->render('orders/edit', [
             'order' => $order,
             'customers' => $customers,
@@ -107,6 +130,9 @@ class OrdersController extends Controller {
             'customerMats' => $customerMats,
             'files' => $files,
             'users' => $users,
+            'contracts' => $contracts,
+            'parts' => $parts,
+            'orderParts' => $orderParts,
             'title' => 'Редактировать заказ-наряд'
         ]);
     }
@@ -135,6 +161,21 @@ class OrdersController extends Controller {
                 ]);
             }
         }
+        // Обновляем запчасти
+        $orderPartModel = new \App\Models\OrderPart();
+        $orderPartModel->deletePartsByOrder($id);
+        if (!empty($data['order_parts']) && is_array($data['order_parts'])) {
+            foreach ($data['order_parts'] as $part) {
+                if (empty($part['part_id'])) continue;
+                $orderPartModel->createPart([
+                    'order_id' => $id,
+                    'part_id' => $part['part_id'],
+                    'quantity' => $part['quantity'] ?? 1,
+                    'price' => $part['price'] ?? 0,
+                    'total' => $part['total'] ?? 0
+                ]);
+            }
+        }
         header('Location: /orders/view/' . $id);
         exit;
     }
@@ -143,6 +184,65 @@ class OrdersController extends Controller {
         $orderModel = new Order();
         $orderModel->deleteOrder($id);
         header('Location: /orders');
+        exit;
+    }
+
+    public function downloadDoc($id) {
+        // Временно включаем вывод ошибок для отладки
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+
+        $orderModel = new Order();
+        $order = $orderModel->getOrderById($id);
+        $works = $orderModel->getWorks($id);
+        $materials = $orderModel->getMaterials($id);
+        $customerMaterials = $orderModel->getCustomerMaterials($id);
+        $customer = (new Customer())->getCustomerById($order['customer_id']);
+        $car = (new Car())->getCarById($order['car_id']);
+        
+        // Исправленный путь к шаблону
+        $templatePath = __DIR__ . '/../../public/templates/order_template.docx';
+        if (!file_exists($templatePath)) {
+            file_put_contents(__DIR__.'/../../logs/debug.log', "[downloadDoc] Шаблон не найден: $templatePath\n", FILE_APPEND);
+            die('Шаблон не найден: ' . $templatePath);
+        }
+        $phpWord = new \PhpOffice\PhpWord\TemplateProcessor($templatePath);
+
+        // Формируем таблицу работ через cloneRow
+        $phpWord->cloneRow('work_name', count($works));
+        $totalWorks = 0;
+        foreach ($works as $i => $w) {
+            $n = $i + 1;
+            $phpWord->setValue("work_name#$n", $w['name'] ?? '');
+            $phpWord->setValue("qty#$n", $w['quantity'] ?? '');
+            $phpWord->setValue("price#$n", $w['price'] ?? '');
+            $phpWord->setValue("sum#$n", $w['total'] ?? '');
+            $totalWorks += (float)($w['total'] ?? 0);
+        }
+
+        // Тестовая подстановка для отладки
+        $phpWord->setValue('works_total', number_format($totalWorks, 2, '.', ' '));
+        $phpWord->setValue('contract_number', $order['contract_number'] ?? '');
+        $phpWord->setValue('contract_date', !empty($order['contract_date']) ? date('d.m.Y', strtotime($order['contract_date'])) : '');
+        $phpWord->setValue('order_number', $order['order_number'] ?? '');
+        $phpWord->setValue('order_date', !empty($order['date_created']) ? date('d.m.Y', strtotime($order['date_created'])) : '');
+        $phpWord->setValue('company_name', $customer['company_name'] ?? $customer['contact_person'] ?? '');
+        $phpWord->setValue('inn', $customer['inn'] ?? '');
+        $phpWord->setValue('address', $customer['address'] ?? '');
+        $phpWord->setValue('phone', $customer['phone'] ?? '');
+        $phpWord->setValue('email', $customer['email'] ?? '');
+        $phpWord->setValue('brand', $car['brand'] ?? '');
+        $phpWord->setValue('model', $car['model'] ?? '');
+        $phpWord->setValue('year', $car['year'] ?? '');
+        $phpWord->setValue('license_plate', $car['license_plate'] ?? '');
+        $phpWord->setValue('body_number', $car['body_number'] ?? '');
+        $phpWord->setValue('vin', $car['vin'] ?? '');
+        // ... остальные переменные по необходимости ...
+
+        $filename = 'order_' . ($order['order_number'] ?? $id) . '.docx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        $phpWord->saveAs('php://output');
         exit;
     }
 } 

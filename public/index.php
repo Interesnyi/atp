@@ -170,6 +170,7 @@ $router->get('orders/edit/{id}', 'OrdersController', 'edit');
 $router->post('orders/update/{id}', 'OrdersController', 'update');
 $router->post('orders/delete/{id}', 'OrdersController', 'delete');
 $router->get('orders/view/{id}', 'OrdersController', 'show');
+$router->get('orders/download/{id}', 'OrdersController', 'downloadDoc');
 
 // --- Справочники заказ-нарядов ---
 $router->get('orders/customers', 'OrdersCustomersController', 'index');
@@ -245,6 +246,36 @@ $router->get('payments/edit/{id}', 'PaymentsController', 'edit');
 $router->post('payments/update/{id}', 'PaymentsController', 'update');
 $router->post('payments/delete/{id}', 'PaymentsController', 'delete');
 
+// --- Раздел Акты осмотра ---
+$router->get('inspection-acts', 'InspectionActsController', 'index');
+$router->get('inspection-acts/create', 'InspectionActsController', 'create');
+$router->post('inspection-acts/store', 'InspectionActsController', 'store');
+$router->get('inspection-acts/show/{id}', 'InspectionActsController', 'show');
+$router->get('inspection-acts/edit/{id}', 'InspectionActsController', 'edit');
+$router->post('inspection-acts/update/{id}', 'InspectionActsController', 'update');
+$router->post('inspection-acts/delete/{id}', 'InspectionActsController', 'delete');
+$router->get('inspection-acts/download/{id}', 'InspectionActsController', 'downloadDoc');
+
+// --- Раздел Договоры ---
+$router->get('contracts', 'ContractsController', 'index');
+$router->get('contracts/create', 'ContractsController', 'create');
+$router->post('contracts/store', 'ContractsController', 'store');
+$router->get('contracts/show/{id}', 'ContractsController', 'show');
+$router->get('contracts/edit/{id}', 'ContractsController', 'edit');
+$router->post('contracts/update/{id}', 'ContractsController', 'update');
+$router->post('contracts/delete/{id}', 'ContractsController', 'delete');
+$router->get('contracts/download/{id}', 'ContractsController', 'downloadDoc');
+
+// --- Раздел Экспертизы ---
+$router->get('examinations', 'ExaminationsController', 'index');
+$router->get('examinations/create', 'ExaminationsController', 'create');
+$router->post('examinations/store', 'ExaminationsController', 'store');
+$router->get('examinations/show/{id}', 'ExaminationsController', 'show');
+$router->get('examinations/edit/{id}', 'ExaminationsController', 'edit');
+$router->post('examinations/update/{id}', 'ExaminationsController', 'update');
+$router->post('examinations/delete/{id}', 'ExaminationsController', 'delete');
+$router->get('examinations/download/{id}', 'ExaminationsController', 'downloadDoc');
+
 // Обработчик 404 ошибки
 $router->setNotFoundHandler('ErrorController', 'notFound');
 
@@ -259,6 +290,15 @@ if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
 }
 
 $router->get('files/invoice/{invoice_id}/{file}', 'FileController', 'invoiceFile');
+
+$router->get('repairs', 'RepairsController', 'index');
+
+$router->get('parts', 'PartsController', 'index');
+$router->get('parts/create', 'PartsController', 'create');
+$router->post('parts/store', 'PartsController', 'store');
+$router->get('parts/edit/{id}', 'PartsController', 'edit');
+$router->post('parts/update/{id}', 'PartsController', 'update');
+$router->post('parts/delete/{id}', 'PartsController', 'delete');
 
 // Запускаем роутер
 $router->dispatch();

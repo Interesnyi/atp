@@ -34,8 +34,10 @@ CREATE TABLE IF NOT EXISTS orders (
     manager VARCHAR(128),
     status VARCHAR(32) DEFAULT 'new',
     comment TEXT,
+    contract_id INT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
-    FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE
+    FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE,
+    FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE SET NULL
 );
 
 -- Работы по заказу

@@ -40,6 +40,17 @@
                 </select>
             </div>
         </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="contract_id" class="form-label">Договор</label>
+                <select class="form-select" id="contract_id" name="contract_id">
+                    <option value="">Без привязки</option>
+                    <?php foreach ($contracts as $contract): ?>
+                        <option value="<?= $contract['id'] ?>" <?= $order['contract_id'] == $contract['id'] ? 'selected' : '' ?>>№<?= htmlspecialchars($contract['contract_number']) ?> от <?= htmlspecialchars($contract['contract_date']) ?> (<?= htmlspecialchars($contract['company_name'] ?: $contract['contact_person']) ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
         <div class="mb-3">
             <label for="comment" class="form-label">Комментарий</label>
             <textarea class="form-control" id="comment" name="comment" rows="2"><?= htmlspecialchars($order['comment']) ?></textarea>
@@ -63,6 +74,37 @@
             </div>
             <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-work-btn"><i class="bi bi-plus"></i> Добавить работу</button>
         </div>
+        <h4 class="mt-4">Запчасти</h4>
+        <table class="table table-bordered align-middle" id="parts-table">
+            <thead class="table-light">
+                <tr>
+                    <th>Запчасть</th>
+                    <th>Кол-во</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if (!empty($orderParts)): foreach ($orderParts as $i => $part): ?>
+                <tr>
+                    <td>
+                        <select name="order_parts[<?= $i ?>][part_id]" class="form-select part-select" required>
+                            <option value="">Выберите...</option>
+                            <?php foreach ($parts as $p): ?>
+                                <option value="<?= $p['id'] ?>" <?= $part['part_id'] == $p['id'] ? 'selected' : '' ?>><?= htmlspecialchars($p['name']) ?> (<?= htmlspecialchars($p['article']) ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                    <td><input type="number" name="order_parts[<?= $i ?>][quantity]" class="form-control part-qty" min="1" value="<?= htmlspecialchars($part['quantity']) ?>" required></td>
+                    <td><input type="number" name="order_parts[<?= $i ?>][price]" class="form-control part-price" step="0.01" min="0" value="<?= htmlspecialchars($part['price']) ?>" required></td>
+                    <td><input type="number" name="order_parts[<?= $i ?>][total]" class="form-control part-total" step="0.01" min="0" value="<?= htmlspecialchars($part['total']) ?>" readonly></td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-part-row">🗑</button></td>
+                </tr>
+            <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-outline-success" id="add-part-row">Добавить запчасть</button>
         <button type="submit" class="btn btn-success">Сохранить</button>
         <a href="/orders/view/<?= $order['id'] ?>" class="btn btn-secondary">Отмена</a>
       </form>
@@ -126,5 +168,33 @@ $(function() {
     $('#add-work-btn').on('click', function() {
         $('#works-list').append(renderWorkRow(workIdx++));
     });
+});
+
+// JS для динамического добавления/удаления строк и автосчёта суммы
+let partIdx = <?= !empty($orderParts) ? count($orderParts) : 0 ?>;
+const partsData = <?= json_encode($parts) ?>;
+$('#add-part-row').on('click', function() {
+    let row = `<tr>
+        <td><select name="order_parts[${partIdx}][part_id]" class="form-select part-select" required><option value="">Выберите...</option>`;
+    partsData.forEach(function(p) {
+        row += `<option value="${p.id}">${p.name} (${p.article})</option>`;
+    });
+    row += `</select></td>
+        <td><input type="number" name="order_parts[${partIdx}][quantity]" class="form-control part-qty" min="1" value="1" required></td>
+        <td><input type="number" name="order_parts[${partIdx}][price]" class="form-control part-price" step="0.01" min="0" value="0" required></td>
+        <td><input type="number" name="order_parts[${partIdx}][total]" class="form-control part-total" step="0.01" min="0" value="0" readonly></td>
+        <td><button type="button" class="btn btn-danger btn-sm remove-part-row">🗑</button></td>
+    </tr>`;
+    $('#parts-table tbody').append(row);
+    partIdx++;
+});
+$('#parts-table').on('input change', '.part-qty, .part-price', function() {
+    const row = $(this).closest('tr');
+    const qty = parseFloat(row.find('.part-qty').val()) || 0;
+    const price = parseFloat(row.find('.part-price').val()) || 0;
+    row.find('.part-total').val((qty * price).toFixed(2));
+});
+$('#parts-table').on('click', '.remove-part-row', function() {
+    $(this).closest('tr').remove();
 });
 </script> 

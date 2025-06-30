@@ -3,7 +3,8 @@
     "description": "ELDIR - Система управления организацией",
     "type": "project",
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "phpoffice/phpword": "^1.3"
     },
     "autoload": {
         "psr-4": {
@@ -15,4 +16,4 @@
         "preferred-install": "dist",
         "sort-packages": true
     }
-} 
+}

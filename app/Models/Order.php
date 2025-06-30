@@ -10,10 +10,11 @@ class Order extends Model {
     public function getAllOrders() {
         $sql = "SELECT o.*, 
             CASE WHEN c.is_individual = 1 THEN c.contact_person ELSE c.company_name END as customer_name, 
-            car.brand, car.model, car.license_plate
+            car.brand, car.model, car.license_plate, co.contract_number, co.contract_date
             FROM {$this->table} o
             JOIN customers c ON o.customer_id = c.id
             JOIN cars car ON o.car_id = car.id
+            LEFT JOIN contracts co ON o.contract_id = co.id
             ORDER BY o.date_created DESC";
         return $this->db->fetchAll($sql);
     }
@@ -21,20 +22,22 @@ class Order extends Model {
     public function getOrderById($id) {
         $sql = "SELECT o.*, 
             CASE WHEN c.is_individual = 1 THEN c.contact_person ELSE c.company_name END as customer_name, 
-            car.brand, car.model, car.license_plate
+            car.brand, car.model, car.license_plate, co.contract_number, co.contract_date
             FROM {$this->table} o
             JOIN customers c ON o.customer_id = c.id
             JOIN cars car ON o.car_id = car.id
+            LEFT JOIN contracts co ON o.contract_id = co.id
             WHERE o.id = ?";
         return $this->db->fetch($sql, [$id]);
     }
 
     public function createOrder($data) {
-        $sql = "INSERT INTO {$this->table} (customer_id, car_id, order_number, date_created, date_completed, manager, status, comment)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO {$this->table} (customer_id, car_id, contract_id, order_number, date_created, date_completed, manager, status, comment)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $this->db->execute($sql, [
             $data['customer_id'],
             $data['car_id'],
+            !empty($data['contract_id']) ? $data['contract_id'] : null,
             $data['order_number'],
             $data['date_created'] ?? date('Y-m-d H:i:s'),
             $data['date_completed'] ?? null,
@@ -46,10 +49,11 @@ class Order extends Model {
     }
 
     public function updateOrder($id, $data) {
-        $sql = "UPDATE {$this->table} SET customer_id=?, car_id=?, order_number=?, date_created=?, date_completed=?, manager=?, status=?, comment=? WHERE id=?";
+        $sql = "UPDATE {$this->table} SET customer_id=?, car_id=?, contract_id=?, order_number=?, date_created=?, date_completed=?, manager=?, status=?, comment=? WHERE id=?";
         return $this->db->execute($sql, [
             $data['customer_id'],
             $data['car_id'],
+            !empty($data['contract_id']) ? $data['contract_id'] : null,
             $data['order_number'],
             $data['date_created'] ?? date('Y-m-d H:i:s'),
             $data['date_completed'] ?? null,

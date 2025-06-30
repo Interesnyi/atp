@@ -172,11 +172,11 @@
                     </li>
                     <?php endif; ?>
                     
-                    <?php // Раздел "Заказ-наряды" (ремонт автомобилей) ?>
+                    <?php // Раздел "Ремонты" вместо "Заказ-наряды" ?>
                     <?php if ($role === 'admin'): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/orders">
-                            <i class="bi bi-clipboard-check"></i> Заказ-наряды
+                        <a class="nav-link" href="/repairs">
+                            <i class="bi bi-tools"></i> Ремонты
                         </a>
                     </li>
                     <?php endif; ?>
